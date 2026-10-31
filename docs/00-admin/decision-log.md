@@ -154,7 +154,7 @@ Four source files instead of three: `engine.js` (state and arithmetic), `format.
 | C4 | Playwright still **not** installed. Test infrastructure change: `tests/browser-backends.js` (new) holds the Chromium and Firefox drivers; `tests/browser-check.js` uses it. No dependency added | Unchanged approval status | The two browser protocols are built into the browsers, so no package is needed |
 | C5 | The possible duplicate screen-reader announcement of an error was **investigated** (two live regions change: polite `Error`, assertive `Cannot divide by zero`). **No code change** | Recorded; needs a human with a screen reader | Without a real screen-reader test a change could make things worse. Test report A6.3 |
 | C6 | The Phase 4 approval of the project lead (2026-10-31): keep D3; approve Firefox installation; approve a local Phase 4 commit; no push; no new features | Followed | |
-| C7 | Phase 5 preparation (outline, presentation plan, acceptance checklist) written as **proposals**. No Word report and no PowerPoint exist | **Waiting for the project lead's approval** | The project lead asked to stop before generating the final deliverables |
+| C7 | Phase 5 preparation (outline, presentation plan, acceptance checklist) was written as **proposals** and approved by the project lead. The draft Word report and PowerPoint were then prepared and corrected after an academic audit (draft 0.2, 31 Oct). All stay **DRAFT** | **Approved; the drafts wait for review by the five students** | Student contributions, human tests and the professor's answers are still pending |
 
 ---
 

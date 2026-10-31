@@ -4,7 +4,7 @@ Specialization Project, Team A. Final defence: **18 December 2026**.
 
 A browser-based calculator that lets the user perform basic mathematical operations. It is built with HTML, CSS and vanilla JavaScript and runs offline by opening `src/index.html`.
 
-> **Status: Phase 4 (quality assurance) finished. Phase 5 (final report and presentation) is planned, not started.**
+> **Status: Phase 4 (quality assurance) finished. Phase 5 (final report and presentation): DRAFT deliverables prepared on 31 October 2026 (draft 0.2); they are not final and not submission-ready until the five students have reviewed and completed them. Start with the [team handover guide](docs/05-final/team-handover-guide.md).**
 > A working calculator exists in `src/` with automated tests. It was tested by the AI assistant in **Edge, Chrome and Firefox** (headless). **No student has run the tests, and no human has verified anything yet:** screen reader, real phone, first-time users, Firefox keyboard focus and independent code review are still open. See the [test report](docs/04-implementation-testing/test-report.md), whose Part A is the current result.
 
 ## The assignment
@@ -82,7 +82,7 @@ specialization-calculator/
 │  │  ├─ security-analysis.md, code-review.md, bug-log.md   Phase 4 quality assurance
 │  │  ├─ team-review-checklist.md    What each student should verify (proposal)
 │  │  └─ code-walkthrough.md         How the team can read and extend the code
-│  └─ 05-final/                      Phase 5 planning (the final report and slides do not exist yet)
+│  └─ 05-final/                      Phase 5 drafts: Word report, PowerPoint, demo script, handover guide, plans
 │     ├─ report-outline.md           Proposed report outline, mapping to our evidence, missing information
 │     ├─ presentation-plan.md        Proposed 10-minute presentation, demo script, speaker split
 │     └─ acceptance-and-submission-checklist.md   Human acceptance tests and submission checklist (empty)

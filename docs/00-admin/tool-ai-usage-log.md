@@ -1,7 +1,7 @@
 # Tool and AI Usage Log
 
 **Purpose:** An honest record of the tools, skills and AI assistance used in this project, so the final documentation can say exactly how the work was done. Only things that actually happened are listed. Planned items are marked **Planned**.
-**Last updated:** 2026-10-31 (entries up to 40)
+**Last updated:** 2026-10-31 (entries up to 47)
 
 **AI assistant used:** Claude Code (model: Sonnet 5.5), working on the project lead's computer under the project lead's instructions. All AI output is a draft. The team must review, understand and be able to explain it, and the professor's AI policy (open question Q4) must be checked.
 
@@ -49,6 +49,13 @@
 | 38 | 2026-10-31 | `node tests/docs-check.js` extended | Check that screenshots match the current application (hashes) and that no screenshot is undescribed | Passes | Pending |
 | 39 | 2026-10-31 | Claude Code (AI assistant) | Phase 4 finalisation: documentation clean-up, Firefox testing, final review, local commit | Files in the Phase 4 final report | **Pending review by all five team members** |
 | 40 | 2026-10-31 | Skill `engineering:documentation` (**invoked**) | Structure for the Phase 5 planning documents | `docs/05-final/report-outline.md`, `presentation-plan.md`, `acceptance-and-submission-checklist.md`. The professor's PowerPoint was re-read with a short Python script (`zipfile`, read-only, run in a scratch folder); **no Word or PowerPoint file was generated** | Pending project lead's approval
+| 41 | 2026-10-31 | Skill `anthropic-skills:pptx` (**invoked**) | Phase 5: build the defence presentation | Its preferred tools (pptxgenjs, python-pptx, LibreOffice) are **not installed**, so PowerPoint was driven through COM automation from a scratch script. Output: `docs/05-final/Team-A-Calculator-Presentation-DRAFT.pptx` (9 slides, speaker notes for five students) | Pending review by all five team members |
+| 42 | 2026-10-31 | Microsoft Word and PowerPoint (COM automation), scratch scripts outside the repository | Build the Word report (`Team-A-Calculator-Report-DRAFT.docx`) from a generated content file, and export slide images for inspection | The report was rebuilt several times in Phase 5 (Gantt chart update, layout fixes, audit corrections, final layout fixes). The `docx` skill was **not** invoked in Phase 5 | Pending |
+| 43 | 2026-10-31 | Skill `superpowers:verification-before-completion` (**invoked**) | Final audit and correction of the Phase 5 documents | Guided the evidence-based checks. **Update to section 2:** in the Phase 5 sessions this Superpowers skill was available and was invoked; no other Superpowers skill was used | Pending |
+| 44 | 2026-10-31 | Claude Code (AI assistant), read-only audit | Academic and presentation audit of the Phase 5 drafts against the professor's presentation | Findings reported to the project lead; nothing was modified | Project lead reviewed and approved the corrections |
+| 45 | 2026-10-31 | Scratch Node script outside the repository, using `tests/browser-backends.js`, Microsoft Edge headless | Run the live-demo script in order, in one page load, in a real browser | Found that step 7 of the demo (sign and delete after a result) would look broken; the script now starts that step with `C` and a fresh number. 18 of 18 checks pass. The application files were **not** changed | Pending; a student must rehearse on the presentation computer |
+| 46 | 2026-10-31 | Claude Code (AI assistant) | Phase 5 corrections: report draft 0.2, slides, demo script, 9-minute plan, placeholder classes | Files in `docs/05-final/` | **Pending review by all five team members** |
+| 47 | 2026-11-01 | Claude Code (AI assistant) | Final targeted layout fixes in the report, status updates in README and logs, the team handover guide, local Phase 5 draft commit | `docs/05-final/team-handover-guide.md`; report draft 0.2 rebuilt (56 pages); the demo check, `node --test` and the docs check were run again; no push | **Pending review by all five team members** |
 
 ## 2. Availability of tools and skills
 

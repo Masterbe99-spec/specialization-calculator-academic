@@ -1,6 +1,6 @@
-# Proposed 10-Minute Presentation and Live Demo
+# Presentation and Live Demo Plan (9-minute plan inside the 10-minute example limit)
 
-**Status:** Structure and speaking allocation **approved by the project lead on 2026-10-31**. A draft PowerPoint is generated in the next step; it will not have been rehearsed and will not be final. The speaker split follows the provisional roles of the [responsibility matrix](../01-project-card/responsibility-matrix.md); **no student has agreed to it yet**, and names are not known to the AI.
+**Status:** Structure approved by the project lead on 2026-10-31; **revised to a 9:00 plan on 2026-10-31 after the academic audit (corrections approved by the project lead)**. A draft PowerPoint is generated in the next step; it will not have been rehearsed and will not be final. The speaker split follows the provisional roles of the [responsibility matrix](../01-project-card/responsibility-matrix.md); **no student has agreed to it yet**, and names are not known to the AI.
 **Last updated:** 2026-10-31
 **Skill used:** `engineering:documentation` (see the [tool log](../00-admin/tool-ai-usage-log.md)).
 
@@ -19,39 +19,43 @@
 
 This answers the PBL driving question: *How can we build a calculator that a first-time user can trust to give correct results, and how can we prove it?*
 
-## 3. Structure and speaking time (approved by the project lead: 10:00 in total)
+## 3. Structure and speaking time (revised to a 9:00 plan after the academic audit)
+
+The first plan filled the whole 10 minutes. Counting only the words that are really spoken (about 1,200 words at about 130 words per minute) plus the demo actions left no buffer, so the plan was cut to **9:00**: 8:20 of speaking and demo, plus about 40 seconds for 8 slide changes and hand-overs, leaving about 1 minute inside the professor's example limit of 10 minutes. The speaker notes in the PowerPoint were rewritten to fit (estimate: about 7:40 of speaking and demo at 130 words per minute; **not measured, the team must time itself**).
 
 | Speaker (provisional role) | Time | Slides | Content |
 |---|---|---|---|
-| **Student 1** (project management) | **2:00** | 1, 2 and 9 | Title and team (0:20); problem, objectives, PBL method, how AI assistance was used (0:55); lessons learned and conclusion (0:45) |
-| **Student 2** (research and requirements) | **1:30** | 3 | Three calculators studied and the lessons; main requirements; what was **not** researched (no user research) |
-| **Student 3** (UI/UX and design) | **1:45** | 4 | Architecture, data-flow and state diagrams; interface and accessibility choices |
-| **Student 4** (development) | **2:30** | 5 and 6 | Implementation and key design ideas (0:45), then the **live demo** (1:45) |
-| **Student 5** (testing and QA) | **2:15** | 7 and 8 | Test results in three browsers and the negative-zero bug (1:20); security, limitations and improvements (0:55) |
+| **Student 1** (project management) | **2:05** | 1, 2 and 9 | Title and own names (0:20); problem, objectives, PBL method, how AI assistance was used (0:45); lessons learned and conclusion, with one sentence from each student (1:00) |
+| **Student 2** (research and requirements) | **1:05** | 3 | Three calculators studied (by the AI assistant; say what you checked yourself) and the lessons; requirements; what was **not** researched (no user research) |
+| **Student 3** (UI/UX and design) | **1:10** | 4 | Architecture (large diagram), state diagram, interface and accessibility choices |
+| **Student 4** (development) | **2:15** | 5 and 6 | Implementation and key design ideas (0:30), then the **live demo** including set-up (1:45) |
+| **Student 5** (testing and QA) | **1:45** | 7 and 8 | Test results in three browsers and the negative-zero bug (1:00); security, limitations and improvements (0:45) |
 
-Running order: Student 1 (slides 1 and 2, 1:15) then Student 2 (1:30), Student 3 (1:45), Student 4 (2:30), Student 5 (2:15), and Student 1 again for the conclusion (0:45). 1:15 + 1:30 + 1:45 + 2:30 + 2:15 + 0:45 = **10:00**.
+Running order: Student 1 (slides 1 and 2, 1:05), Student 2 (1:05), Student 3 (1:10), Student 4 (2:15), Student 5 (1:45), Student 1 again (slide 9, 1:00). 1:05 + 1:05 + 1:10 + 2:15 + 1:45 + 1:00 = **8:20**, plus about 0:40 for slide changes and hand-overs = **9:00**.
 
-**Questions:** all five students answer, each in their own area (section 6). The time for questions is unknown. If the professor asks for a different length, scale each block in proportion. If a student is absent, Student 1 decides the swap in advance (risk RK-09).
+**Questions:** all five students answer, each in their own area (section 6). The time for questions is unknown (Q3); the 9:00 plan leaves about a minute of the example 10 minutes for them. If a student is absent, Student 1 decides the swap in advance (risk RK-05).
 
-## 4. Live demo script (about 2 minutes inside Student 4's block)
+**Authorship in the notes.** The notes say what the AI assistant did (code, tests, first drafts, the automated runs, the code review that found the negative-zero bug) and what the team still has to do. Students may use "we" only for things they really did; each note has a bracketed prompt where a student adds their own real contribution.
 
-Each step has the expected result, taken from the tests. **A student must rehearse these on the real computer; none has been rehearsed.**
+## 4. Live demo script (1:45 inside Student 4's block, including set-up)
+
+Each step has the expected result. The sequence was run from start to finish in a real browser with the state kept between steps (see [live-demo-script.md](live-demo-script.md)). **A student must still rehearse it on the real computer; none has.**
 
 | Step | Do | Expected | Say |
 |---|---|---|---|
-| 1 | Double-click `src/index.html` | The calculator opens, display `0` | "No installation, no internet: it is a local file" |
+| 1 | Open `src/index.html` (already open in a second window; Alt+Tab) | The calculator, display `0` | "No installation, no internet" |
 | 2 | Click `7` `+` `8` `=` | `15` | |
-| 3 | Click `2` `+` `3` `×` `4` `=` | `20` | "It works step by step like a pocket calculator (decision D1)" |
-| 4 | Type `0.1` `+` `0.2` `=` | `0.3` | "Computers store decimals approximately; we show 12 digits" |
-| 5 | Click `5` `÷` `0` `=` | `Error`, `Cannot divide by zero` | "Not Infinity or NaN" |
-| 6 | Press `7` | `7` | "A digit recovers" |
-| 7 | Keyboard: `Esc`, type `12+30*2` then `Enter` | `84` | "Keyboard works too; Esc clears" |
-| 8 | Click `±` then `⌫` | sign toggles; last digit deleted | |
-| 9 | Narrow the window or press F12 and choose a phone size | Layout stays usable at 320 px | "Responsive, keys at least 48 px" |
-| 10 | (If Node.js is available) in a terminal: `node --test` | `88 passed, 0 failed` in about a second | "Our tests run in a second" |
-| 11 | (Optional, honest) `0.1` `+` `0.2` `-` `0.3` `=` | `5.55111512313e-17` | "A known limit we chose to keep and document (D3)" |
+| 3 | Click `2` `+` `3` `×` `4` `=` | `20` | "Step by step like a pocket calculator (decision D1)" |
+| 4 | Type `0.1` `+` `0.2` `=` | `0.3` | "Decimals are stored approximately; we show 12 digits" |
+| 5 | Click `5` `÷` `0` `=`, then `7` | `Error` and `Cannot divide by zero`; then `7` | "A clear error, and it recovers" |
+| 6 | `Esc`, type `12+30*2`, `Enter` | `84` | "The keyboard works too" |
+| 7 | `C`, then click `1` `2`, the sign key, the delete key | `0`, `12`, `-12`, `-1` | "Sign and delete, on a fresh number" |
+| 8 | Make the window narrow | All 19 keys visible down to 320 px | |
+| Optional | `0.1` `+` `0.2` `-` `0.3` `=` | `5.55111512313e-17` | "A known limit we documented (D3)" |
 
-**Backups (none exist yet; the team must make them):** (a) screenshots from `evidence/screenshots/`; (b) a real recording of the demo made by the team, if the team decides to; (c) the project on a second laptop and on a USB stick; (d) the browser that was tested (Edge, Chrome or Firefox) open in advance. Risk RK-07 (live demo fails) is why this is planned.
+Step 7 starts with `C` because after a result the sign key changes the result and the delete key does nothing. Running `node --test` live was dropped from the demo to save time; the results are on slide 7.
+
+**Backups (none exist yet; the team must make them):** (a) screenshots from `evidence/screenshots/` and the three screenshots on slide 5; (b) a real recording of the demo made by the team, if the team decides to; (c) the project on a second laptop and on a USB stick; (d) the browser that was tested.
 
 ## 5. Slide list (approved structure, 9 slides)
 

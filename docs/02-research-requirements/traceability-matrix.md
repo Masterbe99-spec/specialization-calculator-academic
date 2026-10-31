@@ -24,13 +24,13 @@ Source: "2026.10.02 Specialization project" presentation. **Strength** shows how
 | P-06 | Design and prototyping: architecture, schematics, first versions of code or models | 8 (item 3) | Mandatory | [architecture.md](../03-design-prototype/architecture.md), [ui-design.md](../03-design-prototype/ui-design.md), [visual-prototype.html](../03-design-prototype/visual-prototype.html) | Design approved 2026-10-31; first working code exists |
 | P-07 | Implementation and testing: final solution and its verification | 8 (item 4) | Mandatory | `src/`, `tests/`, [test plan](../04-implementation-testing/test-plan.md), [test report](../04-implementation-testing/test-report.md) | Automated verification done (Edge, Chrome). Human verification and Firefox open |
 | P-08 | Documentation and defence: report and presentation of results | 8 (item 5) | Mandatory | `docs/05-final/` | Planning only: [report outline](../05-final/report-outline.md), [presentation plan](../05-final/presentation-plan.md), [acceptance checklist](../05-final/acceptance-and-submission-checklist.md). **No report or slides exist** |
-| P-09 | About 10 minutes to present, with a working demo | 8 (item 5, "for example") | Example | Presentation and live demo, 10 min planning target | Not started |
+| P-09 | About 10 minutes to present, with a working demo | 8 (item 5, "for example") | Example | Presentation and live demo, 9 min plan inside the 10 min example | Draft slides and demo script prepared; rehearsal pending |
 | P-10 | Defence on 18 December in the last class | 9, 11 | Mandatory | Presentation and demo on 18 Dec | Not started |
 | P-11 | Documentation contains clearly defined and described elements | 8 | Mandatory | Document set in `docs/` | In progress |
 | P-12 | Use Project-Based Learning | 7, 12-28 | Mandatory | PBL driving question, retrospectives, decision log | In progress |
 | P-13 | Define work plan and schedule, documentation structure, communication rules | 5 | Course content | WBS, Gantt, folder structure. [team-communication-rules.md](../00-admin/team-communication-rules.md) (proposal, not yet agreed by the team) | Draft written |
 | P-14 | Carry out security analyses | 5 | Course content | [security-analysis.md](../04-implementation-testing/security-analysis.md) | Draft written; human review pending |
-| P-15 | Present the designed system and hand over the documentation | 5 | Course content | Final package | Not started |
+| P-15 | Present the designed system and hand over the documentation | 5 | Course content | Final package | Draft deliverables prepared; student review pending |
 | P-16 | Records of working time of members, kept by the project manager | 32 (item 5) | Guidance | [time-log.md](../00-admin/time-log.md), empty template, no hours recorded | Template only |
 | P-17 | The 17-item "draft should include" list | 32-33 | Guidance | Mapped in requirements specification section 6 | Mapped |
 | P-18 | Grading rubric | 25 | Not provided | To request from the professor | Open question |

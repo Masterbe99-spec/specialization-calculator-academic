@@ -1,6 +1,6 @@
 # Development Log
 
-**Status:** Phases 3 and 4 complete (2026-10-31). Phase 3 is commit `602e34a`; the Phase 4 commit is `test: add QA tests and fix negative-zero entry bug` (see the Git log). Waiting for review before Phase 5.
+**Status:** Phases 3 and 4 complete (2026-10-31). Phase 3 is commit `602e34a`; the Phase 4 commit is `test: add QA tests and fix negative-zero entry bug` (see the Git log). Phase 5 drafts were prepared afterwards (see the Phase 5 files in `docs/05-final/`).
 **Last updated:** 2026-10-31
 **Purpose:** A factual record of what was built, in what order and why, for the final report. Entries are added by whoever does the work.
 
@@ -81,4 +81,4 @@ Nothing has been recorded here by students yet. Suggested columns: date, student
 
 - A student must run the commands in test report A11 and record the result.
 - Human verification (test plan section 7): Firefox focus behaviour, screen reader, Lighthouse, real phone, first-time users, independent code review.
-- Phase 5 (final report, presentation, demonstration) has been **planned but not started**; no final deliverable exists.
+- Phase 5 (final report, presentation, demonstration): **draft deliverables prepared** on 31 October 2026 (draft 0.2) in `docs/05-final/`. They are drafts, not final; student review, human tests and rehearsal are still pending.
