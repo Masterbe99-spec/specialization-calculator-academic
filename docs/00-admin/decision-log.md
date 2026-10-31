@@ -1,0 +1,125 @@
+# Decision Log
+
+**Last updated:** 2026-10-31
+
+Decisions are recorded in a short Architecture Decision Record style: context, decision, options, consequences. A decision is changed only by adding a new entry that supersedes it.
+
+**Approval note:** Decisions D1-D4 and the confirmations below were given by the project lead (the person running this project session) when reviewing the plan on 2026-10-31. Whether the other four team members have discussed them is **not recorded** and should be confirmed.
+
+## Confirmed facts (2026-10-31)
+
+- We are Team A, with five students.
+- The application is a browser calculator in HTML, CSS and vanilla JavaScript. This is the team's choice, not the professor's requirement.
+- Deadline: 18 December 2026. Method: Project-Based Learning. Keep the application simple and aligned with the professor's requirements.
+
+---
+
+## D1: Immediate-execution arithmetic
+
+**Status:** Accepted | **Date:** 2026-10-31
+
+**Context.** `2+3×4` can be evaluated with operator precedence (14) or step by step as on a basic pocket calculator (20). The professor asks for a very simple calculator for basic operations.
+
+**Decision.** Use immediate execution. Each operator press evaluates the pending operation.
+
+| Option | Complexity | User expectation | Note |
+|---|---|---|---|
+| A. Immediate execution (chosen) | Low | Matches basic pocket calculators | Easy to explain and test |
+| B. Operator precedence | Medium | Matches maths convention and phone calculators | Needs expression parsing, more edge cases |
+
+**Consequences.** Simpler state machine. Users who expect precedence may be surprised, so the behaviour is stated in the user guide. Test T-FR-05 will check it.
+
+---
+
+## D2: Classic JavaScript scripts for offline use
+
+**Status:** Accepted | **Date:** 2026-10-31
+
+**Context.** Browsers block ES modules loaded from `file://`, so a double-clicked `index.html` could fail during the live demo.
+
+**Decision.** Use classic `<script>` files. The calculation engine also exposes itself so Node tests can load it. No build step, no dependencies.
+
+| Option | Offline from `file://` | Complexity |
+|---|---|---|
+| A. Classic scripts (chosen) | Works | Low |
+| B. ES modules | Needs a local server | Medium |
+
+**Consequences.** Slightly less modern structure. Demo risk is lower. Details are designed in Phase 2.
+
+---
+
+## D3: Controlled display rounding (provisional)
+
+**Status:** Provisionally accepted | **Date:** 2026-10-31
+
+**Context.** Binary floating point gives `0.1 + 0.2 = 0.30000000000000004`. Showing that is unhelpful. Hiding it carelessly could silently change results.
+
+**Decision.** Round only the **displayed** text (at most 12 significant digits). Never change the stored value. Use exponential notation for large and small values and report overflow. Include tests for floating-point precision, large values, small values and overflow. Do not silently change mathematical results.
+
+| Option | Dependency | Honest to the maths | Note |
+|---|---|---|---|
+| A. Display-only rounding (chosen) | None | Yes | A known trade-off exists (see consequences) |
+| B. Round the stored value | None | No, errors compound silently | Rejected by the project lead's instruction |
+| C. Decimal arithmetic library | Yes | Yes | Extra dependency, conflicts with the minimal-dependency rule |
+
+**Consequences.** `0.1+0.2-0.3` would display about `5.55111512313e-17`. Phase 2 must decide whether this is acceptable, and document it. The decision stays provisional until those tests exist and pass. Rules are in requirements specification section 4.
+
+---
+
+## D4: Data-flow diagram and state diagram, no class diagram
+
+**Status:** Accepted | **Date:** 2026-10-31
+
+**Context.** The professor's list names data-flow diagrams for structured projects and class diagrams for object-oriented ones (slide 32). The calculator is small and the engine is mostly functions and state.
+
+**Decision.** Draw a data-flow diagram and a state diagram in Phase 2. Do not draw a class diagram.
+
+**Consequences.** Fewer diagrams to keep in step with the code. If the professor requires a class diagram, add one with a new entry here.
+
+---
+
+## D5: Markdown as the editable source
+
+**Status:** Accepted | **Date:** 2026-10-31
+
+Planning documents are Markdown in the repository, with Mermaid for diagrams. The final report and slides are produced later from them. This keeps documents versioned and reviewable.
+
+---
+
+## D6: Enable Superpowers and Context7 at local scope
+
+**Status:** Accepted, **enabled in settings, but not loaded in the session checked on 2026-10-31** (see tool log) | **Date:** 2026-10-31
+
+The project lead approved enabling the already-installed plugins. Superpowers v7.0.0 and Context7 v1.0.4 were installed for a different project and disabled. They were enabled with `claude plugin enable <plugin> --scope local`, which writes to `.claude/settings.local.json` here (git-ignored, personal). Plugins load when a session starts, so their skills and tools are **not available until the session is restarted or reloaded**. Nothing unrelated was installed. See the [tool and AI usage log](tool-ai-usage-log.md).
+
+---
+
+## D7: Playwright is planned for a later phase
+
+**Status:** Planned, not installed | **Date:** 2026-10-31
+
+The project lead wants Playwright for automated browser tests later. Adding it needs a development dependency and a browser download, so it will be installed only when that phase starts and will be recorded in the tool log. Until then, unit tests use `node --test` and browser checks are manual.
+
+---
+
+## D8: Git initialised, no commits without approval
+
+**Status:** Accepted | **Date:** 2026-10-31
+
+A Git repository was created (`git init -b main`). No commit is made without the project lead's approval. On 2026-10-31 the project lead approved one commit of the Phase 1 documents (message `docs: initialize specialization calculator project`), local only, **no push**. Phase 2 work is not committed until approved separately.
+
+---
+
+## Open questions (not yet answered)
+
+| # | Question | For | Affects |
+|---|---|---|---|
+| Q1 | Is there a grading rubric? Required report format, length, language and deadline? Submission by Moodle? | Professor | Documentation, risk RK-03 |
+| Q2 | Are the 17 items on slides 32-33 required, or guidance only? | Professor | Scope of documents |
+| Q3 | Is the 10-minute presentation limit firm? | Professor | Presentation |
+| Q4 | What is the policy on AI-tool assistance? | Professor | Risk RK-10 |
+| Q5 | How should the 6 Nov class be used, and are consultation slots available? | Professor | Schedule |
+| Q6 | Real names of the five students, and confirmation of roles | Team | All documents |
+| Q7 | Do the other four members agree with D1-D8? | Team | Decision log |
+| Q8 | Should the working copy move out of OneDrive to protect `.git`? | Project lead | Risk RK-08 |
+| Q9 | Is the "security analysis" in slide 5 expected for the calculator, and how deep? | Professor | Test and security note |

@@ -1,0 +1,16 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# Local tool settings (personal, not shared)
+.claude/settings.local.json
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+*.log
