@@ -4,8 +4,8 @@ Specialization Project, Team A. Final defence: **18 December 2026**.
 
 A browser-based calculator that lets the user perform basic mathematical operations. It is built with HTML, CSS and vanilla JavaScript and runs offline by opening `src/index.html`.
 
-> **Status: Phase 1 finalised, Phase 2 (research and design) in progress.**
-> No calculator code exists yet, and Phase 3 has not started. Everything in `docs/` is a planning draft awaiting team review. Nothing in this repository records work that has not actually been done.
+> **Status: Phase 3 (implementation) started, paused for review.**
+> A working calculator exists in `src/` and has automated tests. It has been tested in **one browser (Edge) only**, by the AI assistant, and **no student has run the tests yet**. See the [test report](docs/04-implementation-testing/test-report.md) for what was and was not checked. The final report and presentation have not been started.
 
 ## The assignment
 
@@ -41,10 +41,19 @@ Roles are provisional. Every member contributes to reviews and the final present
 specialization-calculator/
 ├─ README.md
 ├─ .gitignore
-├─ src/                              Application (empty until implementation phase)
-│  ├─ css/
+├─ package.json                      Scripts only (npm test); no dependencies
+├─ src/                              The application
+│  ├─ index.html                     The page
+│  ├─ css/styles.css                 Look and layout
 │  └─ js/
-├─ tests/                            Automated tests (empty until implementation phase)
+│     ├─ engine.js                   Calculator rules (no page code)
+│     ├─ format.js                   Number and display text (no page code)
+│     ├─ keymap.js                   Keyboard map (no page code)
+│     └─ app.js                      Connects the page to the calculator
+├─ tests/
+│  ├─ engine.test.js, format.test.js, keymap.test.js, security.test.js   `node --test`
+│  ├─ browser-check.js               Real-browser checks (Edge or Chrome, no install)
+│  └─ docs-check.js                  Documentation consistency check
 ├─ docs/
 │  ├─ 00-admin/
 │  │  ├─ decision-log.md             Project decisions and their reasons
@@ -67,7 +76,10 @@ specialization-calculator/
 │  │  ├─ ui-design.md                Wireframe, keyboard map, accessibility review
 │  │  ├─ visual-prototype.html       Static mock-up (does not calculate)
 │  │  └─ pbl-design-notes.md         Material for the final report
-│  ├─ 04-implementation-testing/     Phase 3 (test plan, test report, security note)
+│  ├─ 04-implementation-testing/     Phase 3
+│  │  ├─ test-plan.md, test-report.md   What is tested, and the real results
+│  │  ├─ development-log.md          What was built, in order, and why
+│  │  └─ code-walkthrough.md         How the team can read and extend the code
 │  └─ 05-final/                      Final report, presentation, demo script
 └─ evidence/screenshots/             Real screenshots only
 ```
@@ -87,4 +99,16 @@ Start with the [project card](docs/01-project-card/project-card.md), then the [r
 
 ## Running the application
 
-Not available yet. When implemented, the calculator will run by opening `src/index.html` in a browser, with no build step, server or dependencies. Automated tests will use the Node.js built-in test runner (`node --test`).
+**Use it:** double-click `src/index.html`. It opens in your browser. No server, no internet, no installation.
+
+**Run the checks** (needs only [Node.js](https://nodejs.org) 22 or newer; Edge or Chrome for the browser check):
+
+```
+node --test                                 65 automated unit and static tests
+node tests/browser-check.js --shots         78 checks in a real browser, saves screenshots
+node tests/docs-check.js --require-tests    documentation consistency
+```
+
+`npm test` runs the first command if you have npm. Nothing needs to be installed with npm: the project has no dependencies.
+
+**Keyboard:** digits, `.` (or `,`), `+ - * /`, `Enter` or `=`, `Backspace`, `Esc` (clear). The calculator works in the order you press keys: `2 + 3 × 4 =` gives `20`.

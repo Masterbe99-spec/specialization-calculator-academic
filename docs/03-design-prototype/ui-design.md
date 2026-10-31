@@ -1,6 +1,6 @@
 # UI/UX Design: Wireframe, Prototype and Accessibility
 
-**Status:** Draft v0.2, finalised 2026-10-31 after the project lead's decisions: 18-key layout without percent, light grey-and-blue theme, comma accepted as an alias for the period. The working calculator in `src/` is built from this design.
+**Status:** Draft v0.2, finalised 2026-10-31 after the project lead's decisions: 19-key layout without percent, light grey-and-blue theme, comma accepted as an alias for the period. The working calculator in `src/` is built from this design.
 **Last updated:** 2026-10-31
 **Skills used:** `design:accessibility-review` (WCAG 2.1 AA checklist applied to this *design*). See [tool log](../00-admin/tool-ai-usage-log.md).
 **Related:** [architecture.md](architecture.md) (state rules), [calculator-review.md](../02-research-requirements/calculator-review.md) (lessons L1-L11).
@@ -52,13 +52,13 @@
   ▸ Keyboard                                   native <details> help, closed by default
 ```
 
-4 columns × 5 rows = 18 keys (percent was removed by decision D10). This is the familiar layout of common phone and desktop calculators ([review](../02-research-requirements/calculator-review.md) L9, L11; the team has not compared screenshots of the other products).
+4 columns × 5 rows, with the zero key double width = 19 keys (percent was removed by decision D10). This is the familiar layout of common phone and desktop calculators ([review](../02-research-requirements/calculator-review.md) L9, L11; the team has not compared screenshots of the other products).
 
 ### 2.2 Screen regions
 
 | Region | Content | Behaviour |
 |---|---|---|
-| Expression line | The pending operation, for example `7 +` (FR-16, Should) | Visual only (`aria-hidden`), because the main display already announces the number |
+| Expression line | The pending operation, for example `7 +` (FR-16, Should) | Plain text, **not** a live region (it is not announced on every change) but readable by a screen reader. The first static prototype hid it with `aria-hidden`; this was changed so that the pending operator is not lost for screen-reader users |
 | Main display | The current number or the result | An `<output>` element, which is a live region. One line, right-aligned, tabular figures so digits do not jump |
 | Error line | A short message, for example `Cannot divide by zero` or `Number too large` | Only filled in the Error state. Announced (`role="alert"`) |
 | Keys | 20 buttons in a grid | Described in section 4 |
@@ -117,7 +117,7 @@ The text must say what happened, not use a code. After an error: a digit or `C` 
 
 ## 5. Keyboard map (FR-13)
 
-Physical key presses are translated to the engine's key names in `app.js` only. Keys combined with Ctrl, Alt or Meta are never intercepted, so browser shortcuts such as Ctrl+R still work.
+Physical key presses are translated to the engine's key names in `keymap.js` (pure, unit-tested); `app.js` only calls it. Keys combined with Ctrl, Alt or Meta are never intercepted, so browser shortcuts such as Ctrl+R still work.
 
 | Physical key | Action | Notes |
 |---|---|---|
@@ -131,7 +131,7 @@ Physical key presses are translated to the engine's key names in `app.js` only. 
 | `Tab` / `Shift+Tab` | Move focus between keys | Native, in visual order, left to right and top to bottom |
 | `Space` / `Enter` on a focused key | Press that key | Native button behaviour |
 
-**Known conflict to design for:** when a button has focus, pressing `Enter` normally clicks that button. If our code also handles `Enter` as "equals", a focused `7` key might type 7 *and* calculate. Resolution (to test in Phase 3): the global key handler ignores key events whose target is a button, so native button behaviour applies to a focused button, and the shortcut keys apply otherwise.
+**Known conflict to design for:** when a button has focus, pressing `Enter` normally clicks that button. If our code also handles `Enter` as "equals", a focused `7` key might type 7 *and* calculate. **Implemented resolution (tested in the browser):** the key handler lets `Enter` keep its normal meaning when the focus is on a button, the help summary or a link, and a button is blurred after a mouse or touch click, so a later `Enter` means "equals". Digits, operators, Backspace and Escape are always handled by the calculator.
 
 ## 6. Accessibility review of the design (WCAG 2.1 AA)
 
@@ -157,7 +157,7 @@ Ratios use the WCAG relative-luminance formula. Values are unrounded in the scri
 | Focus ring vs panel | `#111827` | `#F3F5F9` | 16.25 : 1 | 3 : 1 | Yes |
 | Focus ring vs page | `#111827` | `#DDE2EA` | 13.64 : 1 | 3 : 1 | Yes |
 
-These ratios are for the proposed colours only. They must be re-checked if a colour changes, and again on the built page (for example with Lighthouse, planned in Phase 3). Dark mode is not designed (open question O8).
+These ratios are for the colours used in the prototype and in `styles.css`. They must be re-checked if a colour changes, and again on the built page (for example with Lighthouse, planned in Phase 3). Dark mode is not designed (open question O8).
 
 ### 6.2 Checklist
 
@@ -206,7 +206,7 @@ General practice, not tied to a cited source:
 | # | Decision | Chosen | Alternatives | Why chosen |
 |---|---|---|---|---|
 | 1 | Layout | 4 × 5 standard grid | Wide scientific layout; a typed-expression box like Google's | Familiar; works at 320 px; matches "basic operations" |
-| 2 | Key count | 18 keys (no percent, decision D10) | 20 keys with `%` | `%` has context-dependent behaviour on real calculators; the project lead removed it to keep the app very simple |
+| 2 | Key count | 19 keys (no percent, decision D10) | 20 keys with `%` | `%` has context-dependent behaviour on real calculators; the project lead removed it to keep the app very simple |
 | 3 | Colours | Neutral + one blue accent | Many coloured keys; dark theme | Clean, high contrast, one theme to test |
 | 4 | Icons | Text characters | SVG icons / icon font | No image or font files, no extra accessible-name work |
 | 5 | Help | Native `<details>` | Modal dialog; tooltips | No focus trap, keyboard and screen-reader support are built in |

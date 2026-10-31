@@ -76,7 +76,7 @@ Expected displays below are the targets of the automated tests in `tests/`. Actu
 | Floating-point precision | `0.3-0.1`, `1.1×3`, `0.7+0.1` | Display `0.2`, `3.3`, `0.8` |
 | Repeating decimals | `1÷3` | Displays 12 significant digits, e.g. `0.333333333333` |
 | Large values | `999999999999×999999999999` | Exponential notation, no truncation |
-| Small values | `0.000000000001÷10` | Exponential notation, not `0` |
+| Small values | `0.00000000001÷10` (the smallest typeable number is 0.00000000001, 12 digits, so `0.000000000001` cannot be entered) | Displays `1e-12`, not `0` |
 | Overflow | Repeated multiplication beyond the largest number | Overflow message, calculator recovers |
 | Stored value | `0.1+0.2` then `-0.3` | Follows rule 1 and the trade-off above |
 | Input limit | 13th digit pressed | Ignored, display unchanged |

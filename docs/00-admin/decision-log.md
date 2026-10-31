@@ -117,7 +117,7 @@ The project lead reviewed the Phase 2 report and decided as follows. Whether the
 | ID | Decision | Outcome | Notes |
 |---|---|---|---|
 | D9 | Snap tiny add/subtract results to zero | **Rejected** | The numeric result is preserved internally. Nothing is snapped. D3 stays in force |
-| D10 | Percent key | **Removed from scope** (now W-08) | FR-14 is retired. The keypad uses the 18-key layout |
+| D10 | Percent key | **Removed from scope** (now W-08) | FR-14 is retired. The keypad uses the 19-key layout |
 | D11 | Repeat-equals | **Accepted: not supported** | `=` with nothing pending does nothing (FR-18) |
 | D12 | Keyboard input is a Must | **Accepted** | Period is the primary decimal separator. Comma is accepted from the keyboard as an alias, only if it can be done safely (implemented in `keymap.js`, tested) |
 | D13 | Static HTML prototype instead of Figma | **Accepted** | |
@@ -132,6 +132,10 @@ The project lead reviewed the Phase 2 report and decided as follows. Whether the
 **Consequence the team must understand and explain.** `0.1+0.2-0.3` displays `5.55111512313e-17`, because the stored result of `0.1+0.2` is `0.30000000000000004`. This is documented behaviour, not a bug, and it has its own test (T-FR-10). The alternative rules compared in [architecture.md](../03-design-prototype/architecture.md) section 6 were not adopted. If testing later shows real users are confused, add a new decision that supersedes this one.
 
 Dedicated tests are required (and written in Phase 3) for: `0.1+0.2`, `1/3`, very small numbers, large numbers, overflow, and division by zero.
+
+### Keypad size (Phase 3 correction, 2026-10-31)
+
+The Phase 2 documents said "18 keys". The correct count is **19** (four rows of four, and a bottom row of `0` (double width), `.` and `=`). Documents were corrected.
 
 ### D14 addendum (Phase 3, 2026-10-31)
 

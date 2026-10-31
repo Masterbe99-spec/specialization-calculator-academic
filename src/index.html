@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this page's own scripts and styles may run. No outside files, no inline code. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main>
+    <h1 class="title">Calculator</h1>
+
+    <div class="calc" role="group" aria-label="Calculator">
+      <div class="screen">
+        <!-- The pending operation, for example "7 +". -->
+        <p id="expression" class="expr"></p>
+        <!-- <output> is a live region: screen readers announce changes. -->
+        <output id="display" class="main" aria-live="polite" aria-atomic="true">0</output>
+        <!-- Only filled in when there is an error. role="alert" makes screen readers read it. -->
+        <p id="error" class="error" role="alert"></p>
+      </div>
+
+      <div class="keys" id="keys">
+        <button type="button" class="key func" data-key="CLEAR" aria-label="Clear">C</button>
+        <button type="button" class="key func" data-key="BACKSPACE" aria-label="Delete last digit">⌫</button>
+        <button type="button" class="key func" data-key="NEGATE" aria-label="Change sign">±</button>
+        <button type="button" class="key op" data-key="/" aria-label="Divided by">÷</button>
+
+        <button type="button" class="key digit" data-key="7">7</button>
+        <button type="button" class="key digit" data-key="8">8</button>
+        <button type="button" class="key digit" data-key="9">9</button>
+        <button type="button" class="key op" data-key="*" aria-label="Times">×</button>
+
+        <button type="button" class="key digit" data-key="4">4</button>
+        <button type="button" class="key digit" data-key="5">5</button>
+        <button type="button" class="key digit" data-key="6">6</button>
+        <button type="button" class="key op" data-key="-" aria-label="Minus">−</button>
+
+        <button type="button" class="key digit" data-key="1">1</button>
+        <button type="button" class="key digit" data-key="2">2</button>
+        <button type="button" class="key digit" data-key="3">3</button>
+        <button type="button" class="key op" data-key="+" aria-label="Plus">+</button>
+
+        <button type="button" class="key digit zero" data-key="0">0</button>
+        <button type="button" class="key digit" data-key="." aria-label="Decimal point">.</button>
+        <button type="button" class="key eq" data-key="=" aria-label="Equals">=</button>
+      </div>
+    </div>
+
+    <details class="help">
+      <summary>Keyboard</summary>
+      <p>Digits and <kbd>.</kbd> type a number (a comma also works as a decimal point). <kbd>+</kbd> <kbd>-</kbd> <kbd>*</kbd> <kbd>/</kbd> choose an operation. <kbd>Enter</kbd> or <kbd>=</kbd> shows the result. <kbd>Backspace</kbd> deletes the last digit. <kbd>Esc</kbd> clears.</p>
+      <p>The calculator works in the order you press the keys, like a pocket calculator: <code>2 + 3 × 4 =</code> gives <code>20</code>.</p>
+      <p>Very long answers are shown with at most 12 significant digits. The calculator still remembers the full value.</p>
+    </details>
+
+    <noscript><p class="noscript">This calculator needs JavaScript to be turned on.</p></noscript>
+  </main>
+
+  <!-- Classic scripts, in this order: the calculation files first, then the page code. -->
+  <script src="js/engine.js"></script>
+  <script src="js/format.js"></script>
+  <script src="js/keymap.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

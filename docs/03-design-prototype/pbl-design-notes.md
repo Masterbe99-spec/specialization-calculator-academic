@@ -68,3 +68,13 @@ See [tool and AI usage log](../00-admin/tool-ai-usage-log.md), entries 9-18. In 
 | R2 | Should the report include the contributions of each student? In what form? |
 | R3 | Do we describe the AI assistance in the report body or in an appendix? Depends on the professor's AI policy (Q4) |
 | R4 | Which of the screenshots and diagrams go into the 10-minute presentation? (Not created in this phase.) |
+
+## 8. Phase 3 reflection material (2026-10-31)
+
+Facts from the build, for the report. Full detail in the [test report](../04-implementation-testing/test-report.md) and [development log](../04-implementation-testing/development-log.md).
+
+- **What worked:** writing tests first made the requirements concrete. Several ambiguities showed up while writing tests (for example a requirement example with 13 digits that the 12-digit limit would not allow).
+- **What the tests caught about our documents:** the keypad has 19 keys, not 18 (a counting error in Phase 2 text).
+- **What was surprising:** the tests for security (`no innerHTML`) first failed on comments that said "never use innerHTML". A check must look at code, not at explanations of code.
+- **Honest limits:** only Edge was tested; no screen reader; no real user. The code and tests were written by an AI assistant, so the team's understanding is the main open risk (RK-10). The [code walkthrough](../04-implementation-testing/code-walkthrough.md) is meant to close that gap, but nobody has used it yet.
+- **Learning questions the team can answer in the report:** Why is the engine pure? What does immediate execution mean for the user? Why does `0.1+0.2-0.3` show `5.55111512313e-17`, and was our decision right?

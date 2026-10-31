@@ -256,7 +256,7 @@ Computers store most decimal fractions approximately. A scratch calculation with
 4. `-0` is shown as `0`.
 5. A non-zero value is never shown as `0` (rule 5 of the requirements specification section 4).
 
-Checked in the scratch calculation: `999999999999 × 999999999999` gives `9.99999999998e+23`, and `0.000000000001 ÷ 10` gives `1e-13`.
+Checked in the scratch calculation: `999999999999 × 999999999999` gives `9.99999999998e+23`, and `1e-12 ÷ 10` gives `1e-13`. (Note: with the 12-digit entry limit, `0.000000000001` cannot be typed; the tests use `0.00000000001 ÷ 10 = 1e-12`.)
 
 ### 6.3 Options for what the engine *stores*
 

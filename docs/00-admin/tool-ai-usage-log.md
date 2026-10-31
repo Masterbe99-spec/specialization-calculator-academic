@@ -1,7 +1,7 @@
 # Tool and AI Usage Log
 
 **Purpose:** An honest record of the tools, skills and AI assistance used in this project, so the final documentation can say exactly how the work was done. Only things that actually happened are listed. Planned items are marked **Planned**.
-**Last updated:** 2026-10-31 (Phase 2 entries 12-18)
+**Last updated:** 2026-10-31 (entries up to 26)
 
 **AI assistant used:** Claude Code (model: Sonnet 5.5), working on the project lead's computer under the project lead's instructions. All AI output is a draft. The team must review, understand and be able to explain it, and the professor's AI policy (open question Q4) must be checked.
 
@@ -30,6 +30,11 @@
 | 19 | 2026-10-31 | Mermaid (`mermaid.min.js`, downloaded with `curl` from the jsDelivr CDN into a scratch folder **outside the project**, not installed) and headless Microsoft Edge | Verify that the four Mermaid diagrams in `architecture.md` render | A scratch page parsed and rendered all 4 diagrams without error (4 of 4 OK). A screenshot was looked at: the diagrams are valid, but some state-diagram labels overlap because of Mermaid's automatic layout. A stale label ("app.js key map") was found and fixed. Mermaid is **not** a project dependency | Pending team review (open the file in your own Markdown viewer too) |
 | 20 | 2026-10-31 | `curl`, `grep` | Re-check every reference of the calculator review | All 13 URLs returned HTTP 200. The Windows strings, the Google quotes, the open-source code lines and the W3C levels and thresholds were found in the downloaded pages. The old "[S]" items are now verified. A human check by a team member is still pending | Pending (Q12) |
 | 21 | 2026-10-31 | `node tests/docs-check.js` (a small script written in this project, Node built-ins only) | Documentation consistency check | Result on 2026-10-31: 0 errors, 17 warnings (the warnings are "no automated test yet" for each functional requirement; tests start in Phase 3). The first run found one broken link (to the test report), fixed by adding a placeholder report | Pending team review |
+| 22 | 2026-10-31 | Skill `engineering:testing-strategy` (**invoked**) | Test strategy for Phase 3 (pyramid, what to cover) | Applied in `test-plan.md` | Pending team review |
+| 23 | 2026-10-31 | Node.js built-in test runner (`node --test`) | Unit and static tests, written before the code | 65 tests. Results in the test report | Pending: no student has run them yet |
+| 24 | 2026-10-31 | `tests/browser-check.js` (written in this project; Node + the installed Microsoft Edge, DevTools Protocol, **no installation**) | Browser verification in place of Playwright, which is not approved | 78 checks and 5 screenshots. Results in the test report | Pending team review. Edge only |
+| 25 | 2026-10-31 | Scratch mutation script (outside the repository, not kept) | Check that tests fail when code is wrong | 8 of 8 injected bugs caught (first attempt was invalid and repeated) | Pending team review |
+| 26 | 2026-10-31 | Claude Code (AI assistant) | Phase 3 implementation: `engine.js`, `format.js`, `keymap.js`, `app.js`, `index.html`, `styles.css`, tests, test plan, test report, development log, code walkthrough | Files listed in the Phase 3 report | **Pending review by all five team members. The team must read, understand and be able to explain every file** |
 
 ## 2. Availability of tools and skills
 
@@ -43,7 +48,7 @@ Status is only "available" when it has been checked. "Not yet verified" means it
 | `WebSearch`, `web-fetch` subagent | Available | Used on 2026-10-31 | Yes (entries 14-15) |
 | Superpowers v7.0.0 (skills include `test-driven-development`, `systematic-debugging`, `verification-before-completion`) | **Enabled in settings; NOT available in the session checked (2026-10-31, after restart)** | `claude plugin list` shows enabled at project and local scope. The session's skill list contains no Superpowers skills. Cause not diagnosed | **No** |
 | Context7 v1.0.4 (documentation server at `mcp.context7.com`) | **Enabled in settings; NOT available in the session checked (2026-10-31, after restart)** | `claude plugin list` shows enabled. A tool search for Context7 found no Context7 tools. No library-documentation query was made. Phase 2 needs no library documentation (no frameworks), so nothing was lost | **No** |
-| Playwright | **Not installed. Planned** | Not checked, no installation was done | No |
+| Playwright | **Not installed, not approved** | Replaced for now by `tests/browser-check.js` (Edge via DevTools Protocol) | No |
 | `ui-ux-pro-max`, `web-design-guidelines`, `playwright-cli`, `design-taste-frontend`, `frontend-design` | Not installed | Not found in the active session or the installed plugins | No |
 
 ### Verification checklist (to complete in the next session)

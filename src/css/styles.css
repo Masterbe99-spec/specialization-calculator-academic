@@ -1,0 +1,133 @@
+/* styles.css: look and layout. Light theme, grey and blue (decision D15).
+   Colour contrast of every pair was calculated: see docs/03-design-prototype/ui-design.md section 6.1. */
+
+:root {
+  --page: #DDE2EA;
+  --panel: #F3F5F9;
+  --digit: #FFFFFF;
+  --func: #E3E7EE;
+  --op: #DCE6FB;
+  --eq: #1D4ED8;
+  --eq-ink: #FFFFFF;
+  --border: #6B7280;
+  --ink: #111827;
+  --ink2: #4B5563;
+  --op-ink: #1E3A8A;
+  --err: #B91C1C;
+  --focus: #111827;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.5;
+}
+
+main {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+.title { font-size: 1.125rem; margin: 4px 0 12px; }
+
+/* ---- calculator panel ---- */
+.calc {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+/* The screen has a FIXED height so the keys never move when an error appears. */
+.screen {
+  height: 9.5rem;
+  padding: 8px 8px 12px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.expr { margin: 0; min-height: 1.5em; color: var(--ink2); font-size: 1.125rem; font-variant-numeric: tabular-nums; }
+
+.main {
+  display: block;
+  font-size: clamp(2rem, 9vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+/* app.js sets data-size so that long numbers get a smaller font and always fit. */
+.main[data-size="md"] { font-size: clamp(1.5rem, 7vw, 2.25rem); }
+.main[data-size="sm"] { font-size: clamp(1.125rem, 5vw, 1.5rem); }
+.main.is-error { font-size: 1.5rem; color: var(--err); }
+
+.error { margin: 0; min-height: 1.5em; color: var(--err); font-size: 1rem; font-weight: 600; }
+
+/* ---- keys: 4 columns, 19 keys ---- */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.key {
+  min-width: 48px;
+  min-height: 56px;
+  font: inherit;
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--digit);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  touch-action: manipulation; /* no double-tap zoom delay on phones */
+  -webkit-tap-highlight-color: transparent;
+}
+.key.zero { grid-column: span 2; }
+.key.func { background: var(--func); }
+.key.op { background: var(--op); color: var(--op-ink); font-weight: 600; }
+.key.eq { background: var(--eq); color: var(--eq-ink); border-color: var(--eq); font-weight: 600; }
+
+@media (hover: hover) {
+  .key:hover { filter: brightness(0.96); }
+}
+.key:active { filter: brightness(0.9); }
+
+/* A clear focus ring for keyboard users. */
+.key:focus-visible,
+.help summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---- help ---- */
+.help {
+  margin-top: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 0.9375rem;
+}
+.help summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+code, kbd {
+  font-family: ui-monospace, Consolas, monospace;
+  background: #fff;
+  padding: 0 4px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.noscript { color: var(--err); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
