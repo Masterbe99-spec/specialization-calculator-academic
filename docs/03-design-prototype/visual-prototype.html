@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculator: static visual prototype (not functional)</title>
+<style>
+:root {
+  --page: #DDE2EA; --panel: #F3F5F9; --digit: #FFFFFF; --func: #E3E7EE; --op: #DCE6FB;
+  --eq: #1D4ED8; --eq-ink: #FFFFFF; --border: #6B7280; --ink: #111827; --ink2: #4B5563;
+  --op-ink: #1E3A8A; --err: #B91C1C; --focus: #111827;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); line-height: 1.5; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.intro p { max-width: 70ch; }
+h1 { font-size: 1.5rem; margin: 0 0 8px; }
+code, kbd { font-family: ui-monospace, Consolas, monospace; background: #fff; padding: 0 4px; border-radius: 4px; border: 1px solid var(--border); }
+.frames { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin: 16px 0; }
+.frame { flex: 0 1 340px; min-width: 0; }
+.frame.narrow { flex: 0 0 320px; max-width: 100%; }
+.frame-title { font-size: 1rem; margin: 0 0 8px; }
+.calc { background: var(--panel); border-radius: 16px; padding: 12px; border: 1px solid var(--border); }
+.screen { padding: 8px 8px 12px; text-align: right; height: 9.5rem; display: flex; flex-direction: column; justify-content: flex-end; }
+.expr { margin: 0; min-height: 1.5em; color: var(--ink2); font-size: 1.125rem; font-variant-numeric: tabular-nums; }
+.main { display: block; font-size: clamp(2rem, 9vw, 3rem); font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.main.is-error { font-size: 1.5rem; color: var(--err); }
+.error { margin: 0; min-height: 1.5em; color: var(--err); font-size: 1rem; font-weight: 600; }
+.keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.key { min-height: 56px; min-width: 48px; font: inherit; font-size: 1.375rem; font-weight: 500; border: 1px solid var(--border); border-radius: 12px; color: var(--ink); background: var(--digit); cursor: pointer; }
+.key.zero { grid-column: span 2; }
+.key.func { background: var(--func); }
+.key.op { background: var(--op); color: var(--op-ink); font-weight: 600; }
+.key.eq { background: var(--eq); color: var(--eq-ink); border-color: var(--eq); font-weight: 600; }
+.key:hover { filter: brightness(0.96); }
+.key:active { filter: brightness(0.9); }
+.key:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.help { max-width: 70ch; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 8px 16px; }
+.help summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+</style>
+</head>
+<body>
+<main>
+  <header class="intro">
+    <h1>Static visual prototype</h1>
+    <p><strong>Not a working calculator.</strong> This page has no JavaScript. It only shows the proposed look. The three frames show the same design in three situations. The design was approved by the project lead on 2026-10-31. See <code>ui-design.md</code> and <code>architecture.md</code> in this folder.</p>
+  </header>
+  <div class="frames">
+  <section class="frame " aria-labelledby="t-A31">
+    <h2 id="t-A31" class="frame-title">A. Typing: 7 + 8</h2>
+    <div class="calc" role="group" aria-label="Calculator">
+      <div class="screen">
+        <p class="expr">7 +&nbsp;</p>
+        <output class="main" aria-live="polite" aria-atomic="true">8</output>
+        <p class="error" aria-hidden="true">&nbsp;</p>
+      </div>
+      <div class="keys">
+        <button type="button" class="key func" aria-label="Clear">C</button>
+        <button type="button" class="key func" aria-label="Delete last digit">⌫</button>
+        <button type="button" class="key func" aria-label="Change sign">±</button>
+        <button type="button" class="key op" aria-label="Divided by">÷</button>
+        <button type="button" class="key digit">7</button>
+        <button type="button" class="key digit">8</button>
+        <button type="button" class="key digit">9</button>
+        <button type="button" class="key op" aria-label="Times">×</button>
+        <button type="button" class="key digit">4</button>
+        <button type="button" class="key digit">5</button>
+        <button type="button" class="key digit">6</button>
+        <button type="button" class="key op" aria-label="Minus">−</button>
+        <button type="button" class="key digit">1</button>
+        <button type="button" class="key digit">2</button>
+        <button type="button" class="key digit">3</button>
+        <button type="button" class="key op" aria-label="Plus">+</button>
+        <button type="button" class="key digit zero">0</button>
+        <button type="button" class="key digit" aria-label="Decimal point">.</button>
+        <button type="button" class="key eq" aria-label="Equals">=</button>
+      </div>
+    </div>
+  </section>
+  <section class="frame " aria-labelledby="t-B55">
+    <h2 id="t-B55" class="frame-title">B. Error: 5 ÷ 0 =</h2>
+    <div class="calc" role="group" aria-label="Calculator">
+      <div class="screen">
+        <p class="expr">5 ÷ 0&nbsp;</p>
+        <output class="main is-error" aria-live="polite" aria-atomic="true">Error</output>
+        <p class="error" role="alert">Cannot divide by zero</p>
+      </div>
+      <div class="keys">
+        <button type="button" class="key func" aria-label="Clear">C</button>
+        <button type="button" class="key func" aria-label="Delete last digit">⌫</button>
+        <button type="button" class="key func" aria-label="Change sign">±</button>
+        <button type="button" class="key op" aria-label="Divided by">÷</button>
+        <button type="button" class="key digit">7</button>
+        <button type="button" class="key digit">8</button>
+        <button type="button" class="key digit">9</button>
+        <button type="button" class="key op" aria-label="Times">×</button>
+        <button type="button" class="key digit">4</button>
+        <button type="button" class="key digit">5</button>
+        <button type="button" class="key digit">6</button>
+        <button type="button" class="key op" aria-label="Minus">−</button>
+        <button type="button" class="key digit">1</button>
+        <button type="button" class="key digit">2</button>
+        <button type="button" class="key digit">3</button>
+        <button type="button" class="key op" aria-label="Plus">+</button>
+        <button type="button" class="key digit zero">0</button>
+        <button type="button" class="key digit" aria-label="Decimal point">.</button>
+        <button type="button" class="key eq" aria-label="Equals">=</button>
+      </div>
+    </div>
+  </section>
+  <section class="frame narrow" aria-labelledby="t-C67">
+    <h2 id="t-C67" class="frame-title">C. Narrow phone, 320 px wide</h2>
+    <div class="calc" role="group" aria-label="Calculator">
+      <div class="screen">
+        <p class="expr">12.5 ×&nbsp;</p>
+        <output class="main" aria-live="polite" aria-atomic="true">3.14159</output>
+        <p class="error" aria-hidden="true">&nbsp;</p>
+      </div>
+      <div class="keys">
+        <button type="button" class="key func" aria-label="Clear">C</button>
+        <button type="button" class="key func" aria-label="Delete last digit">⌫</button>
+        <button type="button" class="key func" aria-label="Change sign">±</button>
+        <button type="button" class="key op" aria-label="Divided by">÷</button>
+        <button type="button" class="key digit">7</button>
+        <button type="button" class="key digit">8</button>
+        <button type="button" class="key digit">9</button>
+        <button type="button" class="key op" aria-label="Times">×</button>
+        <button type="button" class="key digit">4</button>
+        <button type="button" class="key digit">5</button>
+        <button type="button" class="key digit">6</button>
+        <button type="button" class="key op" aria-label="Minus">−</button>
+        <button type="button" class="key digit">1</button>
+        <button type="button" class="key digit">2</button>
+        <button type="button" class="key digit">3</button>
+        <button type="button" class="key op" aria-label="Plus">+</button>
+        <button type="button" class="key digit zero">0</button>
+        <button type="button" class="key digit" aria-label="Decimal point">.</button>
+        <button type="button" class="key eq" aria-label="Equals">=</button>
+      </div>
+    </div>
+  </section>
+  </div>
+  <details class="help">
+    <summary>Keyboard</summary>
+    <p>Digits and <kbd>.</kbd> type a number. <kbd>+</kbd> <kbd>-</kbd> <kbd>*</kbd> <kbd>/</kbd> choose an operation. <kbd>Enter</kbd> or <kbd>=</kbd> shows the result. <kbd>Backspace</kbd> deletes the last digit. <kbd>Esc</kbd> clears. A comma also works as a decimal point.</p>
+    <p>Note: this calculator does the operations in the order you press them. <code>2 + 3 × 4 =</code> gives <code>20</code>.</p>
+  </details>
+</main>
+</body>
+</html>

@@ -60,8 +60,13 @@ specialization-calculator/
 │  │  └─ responsibility-matrix.md    Provisional five-person responsibilities
 │  ├─ 02-research-requirements/
 │  │  ├─ requirements-specification.md   Functional and non-functional, MoSCoW
+│  │  ├─ calculator-review.md            Review of three existing calculators, sources, lessons
 │  │  └─ traceability-matrix.md          Professor requirements and requirement-to-verification links
-│  ├─ 03-design-prototype/           Phase 2
+│  ├─ 03-design-prototype/           Phase 2 (approved 2026-10-31)
+│  │  ├─ architecture.md             Architecture, data-flow and state diagrams, number policy
+│  │  ├─ ui-design.md                Wireframe, keyboard map, accessibility review
+│  │  ├─ visual-prototype.html       Static mock-up (does not calculate)
+│  │  └─ pbl-design-notes.md         Material for the final report
 │  ├─ 04-implementation-testing/     Phase 3 (test plan, test report, security note)
 │  └─ 05-final/                      Final report, presentation, demo script
 └─ evidence/screenshots/             Real screenshots only
@@ -69,7 +74,7 @@ specialization-calculator/
 
 ## How to read the documents
 
-Start with the [project card](docs/01-project-card/project-card.md), then the [requirements specification](docs/02-research-requirements/requirements-specification.md). The [traceability matrix](docs/02-research-requirements/traceability-matrix.md) shows which professor slide supports each deliverable and which test will verify each requirement.
+Start with the [project card](docs/01-project-card/project-card.md), then the [requirements specification](docs/02-research-requirements/requirements-specification.md). Phase 2 adds the [calculator review](docs/02-research-requirements/calculator-review.md), the [architecture](docs/03-design-prototype/architecture.md) and the [UI design](docs/03-design-prototype/ui-design.md). The [traceability matrix](docs/02-research-requirements/traceability-matrix.md) shows which professor slide supports each deliverable and which test will verify each requirement.
 
 ## Working rules
 

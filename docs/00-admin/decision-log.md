@@ -1,6 +1,6 @@
 # Decision Log
 
-**Last updated:** 2026-10-31
+**Last updated:** 2026-10-31 (Phase 2 decisions recorded)
 
 Decisions are recorded in a short Architecture Decision Record style: context, decision, options, consequences. A decision is changed only by adding a new entry that supersedes it.
 
@@ -50,7 +50,7 @@ Decisions are recorded in a short Architecture Decision Record style: context, d
 
 ## D3: Controlled display rounding (provisional)
 
-**Status:** Provisionally accepted | **Date:** 2026-10-31
+**Status:** Provisionally accepted, **confirmed 2026-10-31** (see Phase 2 decisions) | **Date:** 2026-10-31
 
 **Context.** Binary floating point gives `0.1 + 0.2 = 0.30000000000000004`. Showing that is unhelpful. Hiding it carelessly could silently change results.
 
@@ -110,6 +110,35 @@ A Git repository was created (`git init -b main`). No commit is made without the
 
 ---
 
+## Phase 2 decisions (approved by the project lead on 2026-10-31)
+
+The project lead reviewed the Phase 2 report and decided as follows. Whether the other four team members have discussed these decisions is still **not recorded** (Q7).
+
+| ID | Decision | Outcome | Notes |
+|---|---|---|---|
+| D9 | Snap tiny add/subtract results to zero | **Rejected** | The numeric result is preserved internally. Nothing is snapped. D3 stays in force |
+| D10 | Percent key | **Removed from scope** (now W-08) | FR-14 is retired. The keypad uses the 18-key layout |
+| D11 | Repeat-equals | **Accepted: not supported** | `=` with nothing pending does nothing (FR-18) |
+| D12 | Keyboard input is a Must | **Accepted** | Period is the primary decimal separator. Comma is accepted from the keyboard as an alias, only if it can be done safely (implemented in `keymap.js`, tested) |
+| D13 | Static HTML prototype instead of Figma | **Accepted** | |
+| D14 | Separate engine, number formatting and UI logic | **Accepted** | Phase 3 adds a fourth small file, `keymap.js` (pure, testable), see below |
+| D15 | Light-mode grey-and-blue interface | **Accepted** | No dark mode (Q11 resolved) |
+| D16 | Sign toggle (`±`) | **Kept, priority raised to Must** (FR-15) | Part of the approved Phase 3 engine list |
+
+### D3 confirmed (replaces the "provisional" status)
+
+**Status:** Accepted (confirmed 2026-10-31) | The engine preserves the numeric result. Only the display is formatted: at most 12 significant digits, trailing zeros removed, exponential notation for very large and very small values, a visible error for division by zero and overflow.
+
+**Consequence the team must understand and explain.** `0.1+0.2-0.3` displays `5.55111512313e-17`, because the stored result of `0.1+0.2` is `0.30000000000000004`. This is documented behaviour, not a bug, and it has its own test (T-FR-10). The alternative rules compared in [architecture.md](../03-design-prototype/architecture.md) section 6 were not adopted. If testing later shows real users are confused, add a new decision that supersedes this one.
+
+Dedicated tests are required (and written in Phase 3) for: `0.1+0.2`, `1/3`, very small numbers, large numbers, overflow, and division by zero.
+
+### D14 addendum (Phase 3, 2026-10-31)
+
+Four source files instead of three: `engine.js` (state and arithmetic), `format.js` (numbers to text), `keymap.js` (keyboard event to key name; pure so that it can be unit-tested) and `app.js` (the only file that touches the page). No file uses `eval` or `Function` (NFR-06, checked by an automated test).
+
+---
+
 ## Open questions (not yet answered)
 
 | # | Question | For | Affects |
@@ -123,3 +152,7 @@ A Git repository was created (`git init -b main`). No commit is made without the
 | Q7 | Do the other four members agree with D1-D8? | Team | Decision log |
 | Q8 | Should the working copy move out of OneDrive to protect `.git`? | Project lead | Risk RK-08 |
 | Q9 | Is the "security analysis" in slide 5 expected for the calculator, and how deep? | Professor | Test and security note |
+| Q10 | ~~Approve D9-D14~~ **Answered 2026-10-31**, see Phase 2 decisions | Project lead | Done |
+| Q11 | ~~Comma and dark mode~~ **Answered 2026-10-31**: comma optional alias if safe, no dark mode | Project lead | Done |
+| Q12 | A **team member** must still open every URL in the calculator review and confirm the quoted facts. The assistant re-checked all URLs and quotes on 2026-10-31 (all HTTP 200) but a human check is not recorded | Student 2 (provisional) | RK-11 |
+| Q13 | Did the professor's course expect a citation style or a specific diagram notation? (architecture O5, review reference note) | Professor | Report |

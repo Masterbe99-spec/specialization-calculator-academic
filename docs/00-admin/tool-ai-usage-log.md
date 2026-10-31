@@ -1,7 +1,7 @@
 # Tool and AI Usage Log
 
 **Purpose:** An honest record of the tools, skills and AI assistance used in this project, so the final documentation can say exactly how the work was done. Only things that actually happened are listed. Planned items are marked **Planned**.
-**Last updated:** 2026-10-31
+**Last updated:** 2026-10-31 (Phase 2 entries 12-18)
 
 **AI assistant used:** Claude Code (model: Sonnet 5.5), working on the project lead's computer under the project lead's instructions. All AI output is a draft. The team must review, understand and be able to explain it, and the professor's AI policy (open question Q4) must be checked.
 
@@ -20,6 +20,16 @@
 | 9 | 2026-10-31 | `claude plugin list` (CLI) | Verify Superpowers and Context7 after the restart requested by the project lead | Both listed as enabled (project and local scope). **But** Superpowers skills do not appear in this session's skill list, and a tool search for Context7 returned no Context7 tools. So they are enabled in settings but **not usable in this session** | Result reported to the project lead |
 | 10 | 2026-10-31 | Git, PowerShell/Bash read-only checks | Git configuration, OneDrive risk, secrets and temporary-file check before the first commit | `.git` is inside OneDrive; user name and email set; `core.autocrlf=true`; `.claude/settings.local.json` is git-ignored; text search found no secrets. Added `.gitattributes` (`text=auto`) | Pending project lead review |
 | 11 | 2026-10-31 | Claude Code (AI assistant) | Phase 1 finalisation: working-time log template, communication and meeting rules, consistency corrections | `time-log.md` (hours blank), `team-communication-rules.md` (proposal), edits to README, traceability, risk register, decision log | **Pending review by all five team members** |
+| 12 | 2026-10-31 | Skill `engineering:system-design` (**invoked**) | Structure for the Phase 2 architecture (requirements, high-level design, data flow, trade-offs) | Framework applied in the architecture document | Pending team review |
+| 13 | 2026-10-31 | Skill `design:accessibility-review` (**invoked**) | WCAG 2.1 AA checklist for the Phase 2 prototype | Checklist applied in the design document. This is a **design-stage review of a wireframe**, not an audit of running code | Pending team review |
+| 14 | 2026-10-31 | `WebSearch` tool | Find sources for the three calculators and WCAG | Candidate URLs. Search summaries were **not** used as evidence by themselves | Pending team review |
+| 15 | 2026-10-31 | Four `web-fetch` subagents (one each for: Microsoft Calculator, Google help page, an open-source JS calculator, W3C WCAG pages) | Read the primary pages and report literal facts | Four written reports. Quotes and facts used in the [research review](../02-research-requirements/calculator-review.md). Some strings were relayed through a model summary and are marked **unverified** there | **Team must open each URL** (risk RK-11) |
+| 16 | 2026-10-31 | Node.js (scratch scripts outside the repository) and a Python script | Compare number-rounding options and compute colour-contrast ratios | Outputs quoted in `architecture.md` section 6 and `ui-design.md` section 6. These are design evidence, **not project tests** | Pending team review. The scripts are not in the repository; the team can re-run equivalent one-line checks |
+| 17 | 2026-10-31 | Headless Microsoft Edge (`--screenshot`) | Look at the static visual prototype at desktop width and inside a 320 px frame | Two screenshots in `evidence/screenshots/`. Found and fixed one layout shift (display height) | Pending team review. Edge only |
+| 18 | 2026-10-31 | Claude Code (AI assistant) | Phase 2 documents: calculator review, requirements v0.2, architecture, UI design, visual prototype, PBL notes, decision proposals D9-D14 | Files listed in the Phase 2 report | **Pending review by all five team members** |
+| 19 | 2026-10-31 | Mermaid (`mermaid.min.js`, downloaded with `curl` from the jsDelivr CDN into a scratch folder **outside the project**, not installed) and headless Microsoft Edge | Verify that the four Mermaid diagrams in `architecture.md` render | A scratch page parsed and rendered all 4 diagrams without error (4 of 4 OK). A screenshot was looked at: the diagrams are valid, but some state-diagram labels overlap because of Mermaid's automatic layout. A stale label ("app.js key map") was found and fixed. Mermaid is **not** a project dependency | Pending team review (open the file in your own Markdown viewer too) |
+| 20 | 2026-10-31 | `curl`, `grep` | Re-check every reference of the calculator review | All 13 URLs returned HTTP 200. The Windows strings, the Google quotes, the open-source code lines and the W3C levels and thresholds were found in the downloaded pages. The old "[S]" items are now verified. A human check by a team member is still pending | Pending (Q12) |
+| 21 | 2026-10-31 | `node tests/docs-check.js` (a small script written in this project, Node built-ins only) | Documentation consistency check | Result on 2026-10-31: 0 errors, 17 warnings (the warnings are "no automated test yet" for each functional requirement; tests start in Phase 3). The first run found one broken link (to the test report), fixed by adding a placeholder report | Pending team review |
 
 ## 2. Availability of tools and skills
 
@@ -29,7 +39,8 @@ Status is only "available" when it has been checked. "Not yet verified" means it
 |---|---|---|---|
 | Git 2.56 | Available | `git --version` | Yes (`git init`) |
 | Node.js 24 | Available | Found on the system path | No |
-| Claude Code skills `engineering:documentation`, `engineering:architecture` | Available | Listed in the session and invoked | Yes |
+| Claude Code skills `engineering:documentation`, `engineering:architecture`, `engineering:system-design`, `design:accessibility-review` | Available | Listed in the session and invoked | Yes |
+| `WebSearch`, `web-fetch` subagent | Available | Used on 2026-10-31 | Yes (entries 14-15) |
 | Superpowers v7.0.0 (skills include `test-driven-development`, `systematic-debugging`, `verification-before-completion`) | **Enabled in settings; NOT available in the session checked (2026-10-31, after restart)** | `claude plugin list` shows enabled at project and local scope. The session's skill list contains no Superpowers skills. Cause not diagnosed | **No** |
 | Context7 v1.0.4 (documentation server at `mcp.context7.com`) | **Enabled in settings; NOT available in the session checked (2026-10-31, after restart)** | `claude plugin list` shows enabled. A tool search for Context7 found no Context7 tools. No library-documentation query was made. Phase 2 needs no library documentation (no frameworks), so nothing was lost | **No** |
 | Playwright | **Not installed. Planned** | Not checked, no installation was done | No |
