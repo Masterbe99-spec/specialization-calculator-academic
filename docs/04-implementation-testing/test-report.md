@@ -85,7 +85,7 @@ Mutation check (scratch copy outside the repository, script not kept): 16 delibe
 |---|---|---|
 | **Automated checks** (A2 to A4) | Calculation rules, display text, key map, static code rules, contrast, behaviour in three browsers, layout, zoom, offline, CSP | **Done, all pass** (with the skips in A6.2) |
 | **AI review** (not independent: the same assistant wrote the code) | [Code review](code-review.md) (findings and BUG-1 fix), [security analysis](security-analysis.md), floating-point study, screen-reader investigation (A6.3) | **Done by the AI**; needs human confirmation |
-| **Human verification** | Screen reader, Lighthouse, real phone, a person using only the keyboard, **keyboard focus behaviour in Firefox**, first-time users, independent code review, re-running the commands, checking every reference URL | **Not done.** Tasks are in the [team checklist](team-review-checklist.md) |
+| **Human verification** | Screen reader, Lighthouse, real phone, a person using only the keyboard, **keyboard focus behaviour in Firefox**, first-time users, independent code review, re-running the commands, checking every reference URL | **Not done.** Tasks are in the [team checklist](team-review-checklist.md) and the [acceptance checklist](../05-final/acceptance-and-submission-checklist.md) |
 
 ### Runs by students (to be filled in)
 
@@ -176,7 +176,7 @@ See the [bug log](bug-log.md). **One application bug was found in Phase 4 (BUG-1
 | All automated tests pass? | **Yes**: 88 of 88 unit and static tests; 102 of 102 browser checks in Edge and in Chrome; 88 passed, 0 failed, 11 skipped in Firefox |
 | Any known failing behaviour? | **No** |
 | Unresolved issues | Firefox keyboard-focus behaviour unverified; screen-reader behaviour unknown; human reviews not started; D17 deliberately not implemented |
-| Ready for **student acceptance testing**? | **Yes.** Use the [team checklist](team-review-checklist.md) |
+| Ready for **student acceptance testing**? | **Yes.** Use the [acceptance and submission checklist](../05-final/acceptance-and-submission-checklist.md) and the [team checklist](team-review-checklist.md) |
 | Ready for the final report and defence? | **Not yet.** The human tasks above should be done and recorded first |
 
 ## A11. How to repeat everything

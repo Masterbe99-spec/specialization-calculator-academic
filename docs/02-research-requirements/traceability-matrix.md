@@ -23,7 +23,7 @@ Source: "2026.10.02 Specialization project" presentation. **Strength** shows how
 | P-05 | Literature and assumption review: analysis of existing solutions, collection of requirements | 8 (item 2) | Mandatory | [calculator-review.md](calculator-review.md), [requirements-specification.md](requirements-specification.md) | Draft written. Sources need team verification. No user research |
 | P-06 | Design and prototyping: architecture, schematics, first versions of code or models | 8 (item 3) | Mandatory | [architecture.md](../03-design-prototype/architecture.md), [ui-design.md](../03-design-prototype/ui-design.md), [visual-prototype.html](../03-design-prototype/visual-prototype.html) | Design approved 2026-10-31; first working code exists |
 | P-07 | Implementation and testing: final solution and its verification | 8 (item 4) | Mandatory | `src/`, `tests/`, [test plan](../04-implementation-testing/test-plan.md), [test report](../04-implementation-testing/test-report.md) | Automated verification done (Edge, Chrome). Human verification and Firefox open |
-| P-08 | Documentation and defence: report and presentation of results | 8 (item 5) | Mandatory | `docs/05-final/` | Not started |
+| P-08 | Documentation and defence: report and presentation of results | 8 (item 5) | Mandatory | `docs/05-final/` | Planning only: [report outline](../05-final/report-outline.md), [presentation plan](../05-final/presentation-plan.md), [acceptance checklist](../05-final/acceptance-and-submission-checklist.md). **No report or slides exist** |
 | P-09 | About 10 minutes to present, with a working demo | 8 (item 5, "for example") | Example | Presentation and live demo, 10 min planning target | Not started |
 | P-10 | Defence on 18 December in the last class | 9, 11 | Mandatory | Presentation and demo on 18 Dec | Not started |
 | P-11 | Documentation contains clearly defined and described elements | 8 | Mandatory | Document set in `docs/` | In progress |
@@ -39,7 +39,7 @@ Source: "2026.10.02 Specialization project" presentation. **Strength** shows how
 
 ## Part B. Our requirements to design and verification
 
-Verification methods: **Unit** (Node test runner), **Browser** (automated, Playwright, planned for later), **Manual**, **Inspection**. Design element names refer to documents planned for Phase 2.
+Verification methods: **Unit** (Node test runner), **Browser** (automated: `tests/browser-check.js` in Edge, Chrome and Firefox; Playwright was not used), **Manual**, **Inspection**. Design element names refer to documents planned for Phase 2.
 
 ### Functional
 

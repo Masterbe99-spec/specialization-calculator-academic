@@ -96,7 +96,7 @@ The project lead approved enabling the already-installed plugins. Superpowers v7
 
 ## D7: Playwright is planned for a later phase
 
-**Status:** Planned, not installed | **Date:** 2026-10-31
+**Status:** **Superseded on 2026-10-31 (see C4):** Playwright was never installed; a Node script drives the browsers instead | **Date:** 2026-10-31
 
 The project lead wants Playwright for automated browser tests later. Adding it needs a development dependency and a browser download, so it will be installed only when that phase starts and will be recorded in the tool log. Until then, unit tests use `node --test` and browser checks are manual.
 
@@ -154,6 +154,7 @@ Four source files instead of three: `engine.js` (state and arithmetic), `format.
 | C4 | Playwright still **not** installed. Test infrastructure change: `tests/browser-backends.js` (new) holds the Chromium and Firefox drivers; `tests/browser-check.js` uses it. No dependency added | Unchanged approval status | The two browser protocols are built into the browsers, so no package is needed |
 | C5 | The possible duplicate screen-reader announcement of an error was **investigated** (two live regions change: polite `Error`, assertive `Cannot divide by zero`). **No code change** | Recorded; needs a human with a screen reader | Without a real screen-reader test a change could make things worse. Test report A6.3 |
 | C6 | The Phase 4 approval of the project lead (2026-10-31): keep D3; approve Firefox installation; approve a local Phase 4 commit; no push; no new features | Followed | |
+| C7 | Phase 5 preparation (outline, presentation plan, acceptance checklist) written as **proposals**. No Word report and no PowerPoint exist | **Waiting for the project lead's approval** | The project lead asked to stop before generating the final deliverables |
 
 ---
 

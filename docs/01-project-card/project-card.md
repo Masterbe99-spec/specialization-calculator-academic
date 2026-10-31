@@ -51,7 +51,7 @@ Full requirements: [requirements-specification.md](../02-research-requirements/r
 |---|---|---|
 | Application | HTML, CSS, vanilla JavaScript | Team choice, not imposed by the professor. Classic scripts, no ES modules, so it works offline from `file://` (D2) |
 | Unit testing | Node.js built-in test runner (`node --test`) | No dependency to install |
-| Browser testing | Playwright | **Planned for a later phase.** Not installed. Adding it needs a dependency and a browser download |
+| Browser testing | A Node script (`tests/browser-check.js`) that drives Edge, Chrome and Firefox through their built-in protocols | As built in Phases 3 and 4. **Playwright was not installed** (it would need a dependency and a browser download; not approved) |
 | Version control | Git | Repository initialised; commits only with project lead approval |
 | Diagrams | Mermaid in Markdown: data-flow diagram, state diagram | A class diagram is not planned (D4) |
 | Planning documents | Markdown | Editable source (D5) |

@@ -1,9 +1,9 @@
 # Work Breakdown Structure (WBS)
 
 **Status:** Draft v0.1. Hours are **planning estimates**, not recorded work.
-**Last updated:** 2026-10-31
+**Last updated:** 2026-10-31 (audit corrections: total 198 h, browser-test wording)
 
-Planning assumption: about 5-6 hours per student per week for seven weeks (175-210 person-hours). Estimates are given at level 1 only and total **200 hours**. The team should challenge them at the first review.
+Planning assumption: about 5-6 hours per student per week for seven weeks (175-210 person-hours). Estimates are given at level 1 only and total **198 hours**. The team should challenge them at the first review.
 
 ## Level 1 summary
 
@@ -63,7 +63,7 @@ Planning assumption: about 5-6 hours per student per week for seven weeks (175-2
 - 5.1 Test plan
 - 5.2 Unit tests, including floating-point, large, small and overflow cases
 - 5.3 Randomised key-sequence test
-- 5.4 Playwright browser tests (later phase, needs approval to install)
+- 5.4 Browser tests (as built: a Node script that drives Edge, Chrome and Firefox through their built-in protocols; Playwright was **not** installed)
 - 5.5 Manual test execution and cross-browser checks
 - 5.6 Accessibility checks
 - 5.7 Security note

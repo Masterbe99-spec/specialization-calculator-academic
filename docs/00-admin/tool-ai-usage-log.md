@@ -1,7 +1,7 @@
 # Tool and AI Usage Log
 
 **Purpose:** An honest record of the tools, skills and AI assistance used in this project, so the final documentation can say exactly how the work was done. Only things that actually happened are listed. Planned items are marked **Planned**.
-**Last updated:** 2026-10-31 (entries up to 39)
+**Last updated:** 2026-10-31 (entries up to 40)
 
 **AI assistant used:** Claude Code (model: Sonnet 5.5), working on the project lead's computer under the project lead's instructions. All AI output is a draft. The team must review, understand and be able to explain it, and the professor's AI policy (open question Q4) must be checked.
 
@@ -48,6 +48,7 @@
 | 37 | 2026-10-31 | Scratch script (outside the repository): accessibility-tree snapshots before and after each key | Investigate the possible duplicate screen-reader announcement | An error changes 2 live regions (test report A6.3). **Not a screen-reader test; no screen reader was run** | Needs a human |
 | 38 | 2026-10-31 | `node tests/docs-check.js` extended | Check that screenshots match the current application (hashes) and that no screenshot is undescribed | Passes | Pending |
 | 39 | 2026-10-31 | Claude Code (AI assistant) | Phase 4 finalisation: documentation clean-up, Firefox testing, final review, local commit | Files in the Phase 4 final report | **Pending review by all five team members** |
+| 40 | 2026-10-31 | Skill `engineering:documentation` (**invoked**) | Structure for the Phase 5 planning documents | `docs/05-final/report-outline.md`, `presentation-plan.md`, `acceptance-and-submission-checklist.md`. The professor's PowerPoint was re-read with a short Python script (`zipfile`, read-only, run in a scratch folder); **no Word or PowerPoint file was generated** | Pending project lead's approval
 
 ## 2. Availability of tools and skills
 

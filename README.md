@@ -82,7 +82,10 @@ specialization-calculator/
 │  │  ├─ security-analysis.md, code-review.md, bug-log.md   Phase 4 quality assurance
 │  │  ├─ team-review-checklist.md    What each student should verify (proposal)
 │  │  └─ code-walkthrough.md         How the team can read and extend the code
-│  └─ 05-final/                      Final report, presentation, demo script
+│  └─ 05-final/                      Phase 5 planning (the final report and slides do not exist yet)
+│     ├─ report-outline.md           Proposed report outline, mapping to our evidence, missing information
+│     ├─ presentation-plan.md        Proposed 10-minute presentation, demo script, speaker split
+│     └─ acceptance-and-submission-checklist.md   Human acceptance tests and submission checklist (empty)
 └─ evidence/screenshots/             Real screenshots only
 ```
 

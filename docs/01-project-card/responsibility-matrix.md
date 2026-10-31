@@ -1,6 +1,8 @@
 # Responsibility Matrix (provisional)
 
-**Status:** Draft v0.1. These are **proposed** responsibilities. They are not evidence that any work has been done. Names are placeholders (Student 1-5) until the team supplies them.
+**Status:** Draft v0.1 (Phase 1 plan, with a reality note added on 2026-10-31). These are **proposed** responsibilities. They are not evidence that any work has been done. Names are placeholders (Student 1-5) until the team supplies them.
+
+> **Reality note.** The "Code contribution" column below is the **Phase 1 plan**. In fact the code, tests and documents were written by the AI assistant (Claude Code) on the project lead's instructions (see the [tool and AI usage log](../00-admin/tool-ai-usage-log.md)). The students' role has become: review, understand, verify and explain. What each student really did must be recorded by the students in the [time log](../00-admin/time-log.md) and the [development log](../04-implementation-testing/development-log.md).
 **Last updated:** 2026-10-31
 
 ## Principles
@@ -20,7 +22,7 @@
 | Student 4 | Engine, implementation, code quality | Design (reviewer) | Implementation | Calculation engine, wiring | Live demo |
 | Student 5 | Testing, QA, documentation integration | Project management | Testing and results | Unit tests, test automation, bug triage | Results and verification |
 
-The segment split is a proposal; for a presentation of about 10 minutes it gives roughly 2 minutes each. The final presentation is not created yet.
+The segment split is a proposal. The project lead approved this speaking allocation for the 10-minute presentation on 2026-10-31: Student 1 2:00, Student 2 1:30, Student 3 1:45, Student 4 2:30 (including the live demo), Student 5 2:15. See the [presentation plan](../05-final/presentation-plan.md). The draft slides exist; they have not been rehearsed.
 
 ## Responsibility by work package
 

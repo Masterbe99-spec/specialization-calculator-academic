@@ -74,7 +74,8 @@ gantt
 
 ## Notes
 
-- Playwright browser tests (WBS 5.4) are not shown as a separate bar. They depend on a later approval to install them and would sit inside "Test execution" in W5-W6.
+- Browser tests (WBS 5.4) are not shown as a separate bar; they sit inside "Test execution" in W5-W6. As built, they are a Node script, not Playwright.
+- **Plan versus reality:** this chart is the Phase 1 **plan**. The technical artefacts (documents, code, tests) were all produced on 31 October 2026 by the AI assistant (Claude Code) under the project lead's instructions, far ahead of this schedule. The students' own work (reviews, human tests, report writing, time log, rehearsals) is still to be done and recorded; the chart says nothing about it.
 - The buffer of 10-13 December is deliberate. If work slips, it is used first.
 - Slide 13 shows a midpoint team retrospective in the PBL process. Its exact date is the team's choice; 27 November is our proposal.
 - This schedule is a proposal. Dates change only through a recorded decision.
