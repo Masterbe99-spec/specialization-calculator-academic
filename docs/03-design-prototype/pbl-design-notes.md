@@ -78,3 +78,20 @@ Facts from the build, for the report. Full detail in the [test report](../04-imp
 - **What was surprising:** the tests for security (`no innerHTML`) first failed on comments that said "never use innerHTML". A check must look at code, not at explanations of code.
 - **Honest limits:** only Edge was tested; no screen reader; no real user. The code and tests were written by an AI assistant, so the team's understanding is the main open risk (RK-10). The [code walkthrough](../04-implementation-testing/code-walkthrough.md) is meant to close that gap, but nobody has used it yet.
 - **Learning questions the team can answer in the report:** Why is the engine pure? What does immediate execution mean for the user? Why does `0.1+0.2-0.3` show `5.55111512313e-17`, and was our decision right?
+
+## 9. Phase 4 reflection material (2026-10-31)
+
+- **A bug survived our own tests.** BUG-1 (`-0` shown and then `-07`) passed all 65 Phase 3 tests. It was found by reading the code and trying odd key sequences, then pinned with failing tests, then fixed. Lesson for the report: tests only check what someone thought of; random invariant tests ("every typed entry has a valid shape") find what nobody thought of.
+- **Tests can be wrong too.** Several Phase 4 test mistakes are in the [bug log](../04-implementation-testing/bug-log.md): a 400 % zoom check that passed without testing anything (the keys were off-screen), and a model that forgot that a digit recovers from an error. Reading the test output ("what text is on the display?") exposed them.
+- **Comparing options with data.** The floating-point question was decided by measuring: the current rule matches the exact answer in 99.96 % of random chains; the alternative is exact for `+ - ×` but is worse for `1 ÷ 3 × 3 - 1`. No option is perfect, so the decision stays with the team.
+- **Honest limits:** Firefox, screen reader, phone and users are still untested. See the test report section 6.
+- **Questions the team can answer in the report:** Which tests would you add? Which result surprised you? What does "ready for acceptance testing" mean compared with "finished"?
+
+## 10. Phase 4 finalisation reflection material (2026-10-31)
+
+- **A test can fail for a reason that has nothing to do with our code.** The first Firefox run showed nine failures. By trying the same keys on a page with a single plain button, we showed that the automated Firefox window simply has no keyboard focus. We then **skipped** those checks and said so, instead of hiding the failures or claiming they passed. Lesson for the report: "not tested" is a valid, honest result.
+- **Different browsers expose different tools.** Edge and Chrome offer an accessibility tree through their protocol; Firefox does not. The test script now says SKIP when a tool is missing, so the same script can run everywhere.
+- **Evidence must match the thing it describes.** The screenshots are tied to the current files with a hash, and `docs-check` fails if a file changes without new screenshots. We found that a screenshot can mislead (a Firefox focus picture without a ring), so it is not taken.
+- **A possible accessibility problem was investigated, not "fixed" blindly.** An error changes two live regions. Without a screen reader we recorded what we know and what we do not know, and left the code unchanged.
+- **Documents also need testing.** The test report mixed Phase 3 and Phase 4 results and was reorganised into "current" and "historical" parts; a script now checks links, IDs, counts and screenshots.
+- **Honest limits:** no student has run the tests or done any manual verification. See the [test report](../04-implementation-testing/test-report.md) A5 for who verified what.

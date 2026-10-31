@@ -1,13 +1,28 @@
 // Documentation consistency check. Run from the project root:
 //   node tests/docs-check.js            (errors fail, missing tests are warnings)
 //   node tests/docs-check.js --require-tests   (missing tests are errors too)
+//   node tests/docs-check.js --print-hashes     print the two hashes that evidence/screenshots/README.md must contain
 // Uses only Node's built-in modules. It reads files; it never changes them.
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const root = path.resolve(__dirname, '..');
 const requireTests = process.argv.includes('--require-tests');
+// Screenshots are only evidence if they show the CURRENT application. evidence/screenshots/README.md records a hash of the
+// application files (and of the static prototype); this check fails when a file has changed since the screenshots were taken.
+const APP_FILES = ['src/index.html', 'src/css/styles.css', 'src/js/engine.js', 'src/js/format.js', 'src/js/keymap.js', 'src/js/app.js'];
+function hashOf(files) {
+  const h = crypto.createHash('sha256');
+  for (const f of files) h.update(f + '\n' + fs.readFileSync(path.join(root, f), 'utf8').replace(/\r\n/g, '\n') + '\n');
+  return h.digest('hex');
+}
+if (process.argv.includes('--print-hashes')) {
+  console.log('APP-SOURCE-HASH: ' + hashOf(APP_FILES));
+  console.log('PROTOTYPE-HASH: ' + hashOf(['docs/03-design-prototype/visual-prototype.html']));
+  process.exit(0);
+}
 const errors = [];
 const warnings = [];
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
@@ -81,6 +96,16 @@ if (card.includes('198') !== wbs.includes('198')) errors.push('Effort figure 198
 for (const f of ['README.md', 'docs/01-project-card/project-card.md']) {
   if (!read(f).includes('18 December 2026')) errors.push(`${f} does not mention the deadline 18 December 2026`);
 }
+
+// 5b. The screenshots must match the current application and prototype.
+const shotsReadme = read('evidence/screenshots/README.md');
+for (const [label, files] of [['APP-SOURCE-HASH', APP_FILES], ['PROTOTYPE-HASH', ['docs/03-design-prototype/visual-prototype.html']]]) {
+  const m = shotsReadme.match(new RegExp(label + ': ([0-9a-f]{64})'));
+  if (!m) errors.push(`evidence/screenshots/README.md has no "${label}: <sha256>" line`);
+  else if (m[1] !== hashOf(files)) errors.push(`${label} does not match the current files: the screenshots may be out of date. Retake them (node tests/browser-check.js --shots, --firefox --shots) and run node tests/docs-check.js --print-hashes`);
+}
+const shotFiles = fs.readdirSync(path.join(root, 'evidence', 'screenshots')).filter((f) => f.endsWith('.png'));
+for (const f of shotFiles) if (!shotsReadme.includes(f)) errors.push(`evidence/screenshots/README.md does not describe ${f}`);
 
 // 6. Every document should state when it was last updated.
 for (const f of mdFiles.filter((x) => x.startsWith('docs'))) {

@@ -4,8 +4,8 @@ Specialization Project, Team A. Final defence: **18 December 2026**.
 
 A browser-based calculator that lets the user perform basic mathematical operations. It is built with HTML, CSS and vanilla JavaScript and runs offline by opening `src/index.html`.
 
-> **Status: Phase 3 (implementation) started, paused for review.**
-> A working calculator exists in `src/` and has automated tests. It has been tested in **one browser (Edge) only**, by the AI assistant, and **no student has run the tests yet**. See the [test report](docs/04-implementation-testing/test-report.md) for what was and was not checked. The final report and presentation have not been started.
+> **Status: Phase 4 (quality assurance) finished. Phase 5 (final report and presentation) is planned, not started.**
+> A working calculator exists in `src/` with automated tests. It was tested by the AI assistant in **Edge, Chrome and Firefox** (headless). **No student has run the tests, and no human has verified anything yet:** screen reader, real phone, first-time users, Firefox keyboard focus and independent code review are still open. See the [test report](docs/04-implementation-testing/test-report.md), whose Part A is the current result.
 
 ## The assignment
 
@@ -51,8 +51,8 @@ specialization-calculator/
 │     ├─ keymap.js                   Keyboard map (no page code)
 │     └─ app.js                      Connects the page to the calculator
 ├─ tests/
-│  ├─ engine.test.js, format.test.js, keymap.test.js, security.test.js   `node --test`
-│  ├─ browser-check.js               Real-browser checks (Edge or Chrome, no install)
+│  ├─ engine, format, keymap, security, boundary, accessibility `.test.js`   `node --test`
+│  ├─ browser-check.js, browser-backends.js   Real-browser checks (Edge, Chrome, Firefox; no packages)
 │  └─ docs-check.js                  Documentation consistency check
 ├─ docs/
 │  ├─ 00-admin/
@@ -79,6 +79,8 @@ specialization-calculator/
 │  ├─ 04-implementation-testing/     Phase 3
 │  │  ├─ test-plan.md, test-report.md   What is tested, and the real results
 │  │  ├─ development-log.md          What was built, in order, and why
+│  │  ├─ security-analysis.md, code-review.md, bug-log.md   Phase 4 quality assurance
+│  │  ├─ team-review-checklist.md    What each student should verify (proposal)
 │  │  └─ code-walkthrough.md         How the team can read and extend the code
 │  └─ 05-final/                      Final report, presentation, demo script
 └─ evidence/screenshots/             Real screenshots only
@@ -101,11 +103,12 @@ Start with the [project card](docs/01-project-card/project-card.md), then the [r
 
 **Use it:** double-click `src/index.html`. It opens in your browser. No server, no internet, no installation.
 
-**Run the checks** (needs only [Node.js](https://nodejs.org) 22 or newer; Edge or Chrome for the browser check):
+**Run the checks** (needs only [Node.js](https://nodejs.org) 22 or newer; Edge, Chrome or Firefox for the browser check; set `BROWSER` or `FIREFOX` to the browser's `.exe` if it is not found):
 
 ```
-node --test                                 65 automated unit and static tests
-node tests/browser-check.js --shots         78 checks in a real browser, saves screenshots
+node --test                                 88 automated unit and static tests
+node tests/browser-check.js --shots         102 checks in a real browser (Edge or Chrome), saves screenshots
+node tests/browser-check.js --firefox       the same checks in Firefox (88 pass, 11 skipped for stated reasons)
 node tests/docs-check.js --require-tests    documentation consistency
 ```
 

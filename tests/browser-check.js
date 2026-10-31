@@ -1,26 +1,26 @@
 // Browser verification of src/index.html. NOT part of `node --test` (it opens a real browser).
 //
-//   node tests/browser-check.js                 look for Microsoft Edge or Google Chrome
-//   BROWSER="C:\path\to\browser.exe" node tests/browser-check.js
+//   node tests/browser-check.js                 Microsoft Edge or Google Chrome (first one found)
+//   BROWSER="C:\path\to\chrome.exe" node tests/browser-check.js
+//   node tests/browser-check.js --firefox       Firefox (set FIREFOX="C:\path\to\firefox.exe" if it is not found)
 //   node tests/browser-check.js --shots         also save screenshots to evidence/screenshots/
 //
-// How it works: it starts the browser in headless mode, opens the page from file://, and controls it
-// with the Chrome DevTools Protocol over a WebSocket (built into Node 22+). It clicks with the mouse,
-// presses real keys, and reads the page. Nothing is installed and nothing is sent anywhere.
-// It tests ONE browser (the one found), so Firefox is not covered.
+// How it works: it starts the browser headless, opens the page from file://, and controls it with
+// a protocol built into the browser (DevTools Protocol for Edge and Chrome, WebDriver BiDi for Firefox),
+// using only Node.js built-ins. It clicks with the mouse, presses real keys and reads the page.
+// Nothing is sent anywhere. See tests/browser-backends.js for the two drivers.
+// Checks that need Chromium's accessibility-tree command are reported as SKIP in Firefox, not as passed.
 'use strict';
-const { spawn } = require('node:child_process');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
+const { startChromium, startFirefox } = require('./browser-backends.js');
 
 const root = path.resolve(__dirname, '..');
 const pageUrl = pathToFileURL(path.join(root, 'src', 'index.html')).href;
 const wantShots = process.argv.includes('--shots');
-const PORT = 9333;
 
-function findBrowser() {
+function findChromium() {
   const candidates = [
     process.env.BROWSER,
     'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -32,8 +32,22 @@ function findBrowser() {
   ].filter(Boolean);
   return candidates.find((p) => fs.existsSync(p));
 }
+function findFirefox() {
+  const candidates = [
+    process.env.FIREFOX,
+    process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Programs', 'Mozilla Firefox', 'firefox.exe'),
+    'C:\\Program Files\\Mozilla Firefox\\firefox.exe',
+    '/usr/bin/firefox', '/Applications/Firefox.app/Contents/MacOS/firefox',
+  ].filter(Boolean);
+  return candidates.find((p) => fs.existsSync(p));
+}
 
 const results = [];
+let skipped = 0;
+function skip(name, why) {
+  skipped++;
+  console.log(`SKIP  ${name}   -> ${why}`);
+}
 function check(name, ok, detail) {
   results.push({ name, ok: !!ok });
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok || detail === undefined ? '' : '   -> ' + detail}`);
@@ -42,69 +56,26 @@ function check(name, ok, detail) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function main() {
-  const exe = findBrowser();
-  if (!exe) { console.log('No Edge or Chrome found. Set the BROWSER environment variable.'); process.exit(2); }
-  const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'calc-browser-'));
-  const child = spawn(exe, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
-    `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`, '--window-size=1000,900', pageUrl], { stdio: 'ignore' });
-
-  let ws;
+  const wantFirefox = process.argv.includes('--firefox');
+  const exe = wantFirefox ? findFirefox() : findChromium();
+  if (!exe) {
+    console.log(wantFirefox ? 'Firefox not found. Set the FIREFOX environment variable.' : 'No Edge or Chrome found. Set the BROWSER environment variable.');
+    process.exit(2);
+  }
+  const backend = wantFirefox ? await startFirefox(exe, pageUrl) : await startChromium(exe, pageUrl);
   try {
-    // Find the page and connect.
-    let target;
-    for (let i = 0; i < 60 && !target; i++) {
-      await sleep(250);
-      try {
-        const list = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
-        target = list.find((t) => t.type === 'page' && t.url.startsWith('file:'));
-      } catch (e) { /* browser still starting */ }
-    }
-    if (!target) throw new Error('Could not connect to the browser');
-    const version = await (await fetch(`http://127.0.0.1:${PORT}/json/version`)).json();
-    console.log(`Browser: ${version.Browser}   Page: ${pageUrl}\n`);
-
-    ws = new WebSocket(target.webSocketDebuggerUrl);
-    await new Promise((res, rej) => { ws.onopen = res; ws.onerror = rej; });
-    let nextId = 1;
-    const pending = new Map();
-    const problems = []; // console errors, exceptions, CSP violations
-    ws.onmessage = (m) => {
-      const msg = JSON.parse(m.data);
-      if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg); pending.delete(msg.id); return; }
-      if (msg.method === 'Runtime.exceptionThrown') problems.push('exception: ' + (msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text));
-      if (msg.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(msg.params.type)) problems.push('console.' + msg.params.type + ': ' + msg.params.args.map((a) => a.value || a.description).join(' '));
-      if (msg.method === 'Log.entryAdded' && ['error', 'warning'].includes(msg.params.entry.level)) problems.push('log ' + msg.params.entry.level + ': ' + msg.params.entry.text + ' ' + (msg.params.entry.url || ''));
-    };
-    const send = (method, params = {}) => new Promise((res, rej) => {
-      const id = nextId++;
-      pending.set(id, (msg) => (msg.error ? rej(new Error(method + ': ' + msg.error.message)) : res(msg.result)));
-      ws.send(JSON.stringify({ id, method, params }));
-    });
-    const evalJs = async (expression) => {
-      const r = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
-      if (r.exceptionDetails) throw new Error('page error: ' + (r.exceptionDetails.exception?.description || r.exceptionDetails.text));
-      return r.result.value;
-    };
-
-    await send('Runtime.enable'); await send('Log.enable'); await send('Page.enable');
-    await send('Accessibility.enable');
-    await send('Page.reload'); await sleep(800);
+    console.log(`Browser: ${backend.version}   Page: ${pageUrl}\n`);
+    const { problems, requests, evalJs } = backend;
+    await backend.reload(); await sleep(800);
 
     // ---- helpers that act like a user ----
     const text = (id) => evalJs(`document.getElementById('${id}').textContent`);
     const display = () => text('display');
-    const KEYCODES = { Enter: [13, '\r'], Backspace: [8], Escape: [27], Tab: [9], ' ': [32, ' '] };
-    async function pressKey(key, modifiers = 0) {
-      const [vk, txt] = KEYCODES[key] || [key.length === 1 ? key.toUpperCase().charCodeAt(0) : 0, key.length === 1 ? key : undefined];
-      await send('Input.dispatchKeyEvent', { type: 'keyDown', key, code: key.length === 1 ? undefined : key, windowsVirtualKeyCode: vk, text: txt, modifiers });
-      await send('Input.dispatchKeyEvent', { type: 'keyUp', key, code: key.length === 1 ? undefined : key, windowsVirtualKeyCode: vk, modifiers });
-    }
+    const pressKey = (key, modifiers = 0) => backend.pressKey(key, modifiers);
     async function typeKeys(seq) { for (const ch of seq) await pressKey(ch === '\n' ? 'Enter' : ch); }
     async function clickKey(dataKey) {
-      const pos = await evalJs(`(() => { const b = document.querySelector('[data-key="${dataKey}"]'); const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
-      for (const type of ['mouseMoved', 'mousePressed', 'mouseReleased']) {
-        await send('Input.dispatchMouseEvent', { type, x: pos.x, y: pos.y, button: type === 'mouseMoved' ? 'none' : 'left', clickCount: type === 'mouseMoved' ? 0 : 1 });
-      }
+      const pos = await evalJs(`(() => { const b = document.querySelector('[data-key="${dataKey}"]'); b.scrollIntoView({ block: 'center', inline: 'center' }); const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+      await backend.mouseClick(pos.x, pos.y);
     }
     // Click a sequence like "7+8=": letters c, b, n stand for Clear, Backspace, Negate.
     const NAMES = { c: 'CLEAR', b: 'BACKSPACE', n: 'NEGATE' };
@@ -113,10 +84,13 @@ async function main() {
     const topOf = (dataKey) => evalJs(`document.querySelector('[data-key="${dataKey}"]').getBoundingClientRect().top`);
     const shot = async (file) => {
       if (!wantShots) return;
-      const r = await send('Page.captureScreenshot', { format: 'png' });
-      fs.writeFileSync(path.join(root, 'evidence', 'screenshots', file), Buffer.from(r.data, 'base64'));
+      fs.writeFileSync(path.join(root, 'evidence', 'screenshots', file.replace('.png', backend.shotSuffix + '.png')), await backend.screenshot());
     };
-    const setViewport = (w, h = 800) => send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: false });
+    const setViewport = (w, h = 800) => backend.setViewport(w, h, 1);
+    // Some browsers (Firefox started by an automated session) never get real keyboard focus. Then behaviour that depends on focus
+    // (the :focus-visible ring, Enter and Space on a focused button) cannot be tested, and those checks are skipped, not passed.
+    let hasFocus = true;
+    const focusCheck = (name, ok, detail) => (hasFocus ? check(name, ok, detail) : skip(name, 'this automated window has no keyboard focus (document.hasFocus() is false; a plain page behaves the same), so focus-dependent behaviour cannot be tested here'));
 
     // ================= 1. Page load =================
     await setViewport(1000, 800);
@@ -195,40 +169,48 @@ async function main() {
 
     // ================= 5. Focus, Tab, Enter and Space =================
     // Reload first: browsers start Tab from the last element that was clicked, so a fresh page is needed.
-    await send('Page.reload'); await sleep(800);
+    await backend.reload(); await sleep(800);
+    hasFocus = await evalJs('document.hasFocus()');
     for (let i = 0; i < 5; i++) await pressKey('Tab');
     check('T-NFR-04: Tab reaches the keys in visual order (C, backspace, sign, divide, 7)', (await evalJs(`document.activeElement.dataset.key`)) === '7', await evalJs(`document.activeElement.dataset.key`));
     const ring = await evalJs(`(() => { const s = getComputedStyle(document.activeElement); return { w: s.outlineWidth, st: s.outlineStyle, off: s.outlineOffset }; })()`);
-    check('T-NFR-04: the focused key has a visible 3 px focus ring', ring.st === 'solid' && ring.w === '3px', JSON.stringify(ring));
-    await shot('2026-10-31-app-focus-desktop.png');
+    focusCheck('T-NFR-04: the focused key has a visible 3 px focus ring', ring.st === 'solid' && ring.w === '3px', JSON.stringify(ring));
+    if (hasFocus) await shot('2026-10-31-app-focus-desktop.png'); // without real focus the ring would be missing and the picture misleading
     await pressKey('Enter');
-    check('T-NFR-04: Enter on a focused key presses that key (7), not "equals"', (await display()) === '7', await display());
+    focusCheck('T-NFR-04: Enter on a focused key presses that key (7), not "equals"', (await display()) === '7', await display());
     await pressKey(' ');
-    check('T-NFR-04: Space on a focused key presses that key (77)', (await display()) === '77', await display());
+    focusCheck('T-NFR-04: Space on a focused key presses that key (77)', (await display()) === '77', await display());
     await pressKey('Escape'); await clicks('4+5');
     const focusAfterClick = await evalJs('document.activeElement.tagName');
     await pressKey('Enter');
     check('UI: after a mouse click focus is released, so Enter means "equals" (4 + 5 Enter = 9)', focusAfterClick === 'BODY' && (await display()) === '9', `${focusAfterClick}, ${await display()}`);
     await pressKey('Escape');
-    await send('Page.reload'); await sleep(800);
+    await backend.reload(); await sleep(800);
     for (let i = 0; i < 20; i++) await pressKey('Tab'); // 19 keys, then the help summary
     check('T-NFR-04: Tab continues to the help summary after the last key', (await evalJs(`document.activeElement.tagName`)) === 'SUMMARY', await evalJs(`document.activeElement.tagName`));
     await pressKey('Enter');
-    check('T-NFR-04: Enter on the help summary opens it (it is not taken as "equals")', (await evalJs(`document.querySelector('details').open`)) === true && (await display()) === '0');
+    focusCheck('T-NFR-04: Enter on the help summary opens it (it is not taken as "equals")', (await evalJs(`document.querySelector('details').open`)) === true && (await display()) === '0');
     await pressKey('Enter');
     await evalJs('document.activeElement.blur()');
 
     // ================= 6. Accessibility tree =================
-    const ax = (await send('Accessibility.getFullAXTree')).nodes;
-    const buttons = ax.filter((n) => n.role && n.role.value === 'button' && !n.ignored);
-    const names = buttons.map((n) => (n.name && n.name.value) || '');
-    check('T-NFR-04: the accessibility tree has 19 buttons, all with a name', buttons.length === 19 && names.every((n) => n.length > 0), `${buttons.length} buttons; names: ${names.join(', ')}`);
-    const wanted = ['Clear', 'Delete last digit', 'Change sign', 'Divided by', 'Times', 'Minus', 'Plus', 'Equals', 'Decimal point'];
-    check('T-NFR-04: the operator keys are named in words (Divided by, Times, Minus, Plus, Equals ...)', wanted.every((w) => names.includes(w)), names.join(', '));
-    const status = ax.find((n) => n.role && n.role.value === 'status');
-    check('T-NFR-04: the display is exposed as a live status region', !!status, ax.filter((n) => !n.ignored).map((n) => n.role && n.role.value).slice(0, 20).join(','));
-    const alertNode = ax.find((n) => n.role && n.role.value === 'alert');
-    check('T-NFR-04: the error line is exposed as an alert', !!alertNode);
+    const ax = await backend.axTree();
+    if (ax) {
+      const buttons = ax.filter((n) => n.role && n.role.value === 'button' && !n.ignored);
+      const names = buttons.map((n) => (n.name && n.name.value) || '');
+      check('T-NFR-04: the accessibility tree has 19 buttons, all with a name', buttons.length === 19 && names.every((n) => n.length > 0), `${buttons.length} buttons; names: ${names.join(', ')}`);
+      const wanted = ['Clear', 'Delete last digit', 'Change sign', 'Divided by', 'Times', 'Minus', 'Plus', 'Equals', 'Decimal point'];
+      check('T-NFR-04: the operator keys are named in words (Divided by, Times, Minus, Plus, Equals ...)', wanted.every((w) => names.includes(w)), names.join(', '));
+      const status = ax.find((n) => n.role && n.role.value === 'status');
+      check('T-NFR-04: the display is exposed as a live status region', !!status, ax.filter((n) => !n.ignored).map((n) => n.role && n.role.value).slice(0, 20).join(','));
+      const alertNode = ax.find((n) => n.role && n.role.value === 'alert');
+      check('T-NFR-04: the error line is exposed as an alert', !!alertNode);
+    } else {
+      skip('T-NFR-04: accessibility tree (19 named buttons, status region, alert)', 'this browser driver has no accessibility-tree command');
+    }
+    // Names that every browser can report from the page itself (labels and roles in the markup):
+    const markup = await evalJs(`(() => { const b = [...document.querySelectorAll('button')]; return { count: b.length, unnamed: b.filter((x) => !(x.getAttribute('aria-label') || x.textContent.trim())).length, output: document.getElementById('display').tagName, live: document.getElementById('display').getAttribute('aria-live'), alertRole: document.getElementById('error').getAttribute('role') }; })()`);
+    check('T-NFR-04: in the markup there are 19 buttons, all with a label or text; the display is an <output aria-live="polite">; the error line has role="alert"', markup.count === 19 && markup.unnamed === 0 && markup.output === 'OUTPUT' && markup.live === 'polite' && markup.alertRole === 'alert', JSON.stringify(markup));
     check('T-NFR-04: the page language is English', (await evalJs('document.documentElement.lang')) === 'en');
 
     // ================= 7. Responsive layout =================
@@ -264,31 +246,146 @@ async function main() {
     }
     await setViewport(1000, 800); await clear();
 
+
+    // ================= 7b. Phase 4: zoom, enlarged text, live region, offline, CSP, keyboard-only =================
+    // Browser zoom is emulated the way WCAG describes it: 200 % of a 1280 x 1024 window is a 640 x 512 CSS-pixel
+    // viewport at 2x pixel density, and 400 % is 320 x 256 at 4x.
+    async function measure() {
+      return evalJs(`(() => {
+        const keys = [...document.querySelectorAll('.key')].map((k) => k.getBoundingClientRect());
+        const d = document.getElementById('display'); const screen = document.querySelector('.screen');
+        return { docWidth: document.documentElement.scrollWidth, innerWidth: window.innerWidth, dpr: window.devicePixelRatio,
+          minW: Math.min(...keys.map((r) => r.width)), minH: Math.min(...keys.map((r) => r.height)),
+          keysInside: keys.every((r) => r.left >= 0 && r.right <= window.innerWidth + 0.5),
+          displayFits: d.scrollWidth <= d.clientWidth + 1, screenFits: screen.scrollHeight <= screen.clientHeight + 1, text: d.textContent };
+      })()`);
+    }
+    for (const [label, w, h, scale] of [['zoom 200 %', 640, 512, 2], ['zoom 400 %', 320, 256, 4]]) {
+      await backend.setViewport(w, h, scale);
+      await clear(); await clicks('1234567890123n');
+      const m1 = await measure();
+      await clear(); await typeKeys('999999999999*999999999999\n');
+      const m2 = await measure();
+      check(`T-NFR-05 ${label} (${w} x ${h} CSS px @${scale}x): no horizontal scrolling, all keys inside the viewport`, m1.docWidth <= m1.innerWidth && m1.keysInside, JSON.stringify(m1));
+      check(`T-NFR-05 ${label}: long numbers fit the display ("${m1.text}", "${m2.text}") and the display area does not overflow`, m1.text === '-123456789012' && m2.text === '9.99999999998e+23' && m1.displayFits && m2.displayFits && m1.screenFits && m2.screenFits, JSON.stringify([m1, m2]));
+      check(`T-NFR-03 ${label}: keys stay at least 48 x 48 CSS px`, m1.minW >= 48 && m1.minH >= 48, `${m1.minW} x ${m1.minH}`);
+      if (scale === 4) { await clear(); await clicks('7+8'); await shot('2026-10-31-app-zoom400-320x256.png'); }
+    }
+    // Enlarged text only (the browser "font size" setting), emulated by scaling the root font size.
+    await setViewport(320, 900);
+    for (const percent of [150, 200]) {
+      await evalJs(`document.documentElement.style.fontSize = '${percent}%'`);
+      await clear(); await clicks('1234567890123n');
+      const t1 = await measure();
+      await clear(); await typeKeys('999999999999*999999999999\n');
+      const t2 = await measure();
+      check(`T-NFR-05 text size ${percent} % at 320 px: no horizontal scrolling and keys inside`, t1.docWidth <= t1.innerWidth && t1.keysInside, JSON.stringify(t1));
+      check(`T-NFR-05 text size ${percent} % at 320 px: long numbers stay inside the display ("${t1.text}", "${t2.text}")`, t1.text === '-123456789012' && t2.text === '9.99999999998e+23' && t1.displayFits && t2.displayFits && t1.screenFits && t2.screenFits, JSON.stringify([t1, t2]));
+      if (percent === 200) { await clear(); await clicks('7+8'); await shot('2026-10-31-app-text200-320px.png'); }
+    }
+    await evalJs(`document.documentElement.style.fontSize = ''`);
+    await setViewport(1000, 800); await clear();
+
+    // The live region: properties from the browser's accessibility tree (this is NOT a screen-reader test).
+    await clicks('7+8=');
+    const axNodes = await backend.axTree();
+    if (axNodes) {
+      const statusNode = axNodes.find((n) => n.role && n.role.value === 'status');
+      const props = Object.fromEntries(((statusNode && statusNode.properties) || []).map((q) => [q.name, q.value.value]));
+      const childText = ((statusNode && statusNode.childIds) || []).map((id) => axNodes.find((n) => n.nodeId === id)).map((n) => (n && n.name && n.name.value) || '').join('');
+      check('T-NFR-04 live region: the display is a polite, atomic live region (aria-live="polite", aria-atomic)', props.live === 'polite' && props.atomic === true, JSON.stringify(props));
+      check('T-NFR-04 live region: after 7 + 8 = the accessibility tree holds the new value "15"', childText === '15', childText);
+      await clear(); await clicks('5/0=');
+      const axAlert = (await backend.axTree()).find((n) => n.role && n.role.value === 'alert');
+      check('T-NFR-04 live region: the error message sits in an alert region ("Cannot divide by zero")', !!axAlert && (await text('error')) === 'Cannot divide by zero', await text('error'));
+    } else {
+      skip('T-NFR-04 live region: properties and values in the accessibility tree', 'this browser driver has no accessibility-tree command');
+      const attrs = await evalJs(`(() => { const d = document.getElementById('display'); return { live: d.getAttribute('aria-live'), atomic: d.getAttribute('aria-atomic'), text: d.textContent }; })()`);
+      check('T-NFR-04 live region (markup): aria-live="polite", aria-atomic="true", and the text updates to "15"', attrs.live === 'polite' && attrs.atomic === 'true' && attrs.text === '15', JSON.stringify(attrs));
+    }
+    await clear();
+
+    // Offline operation: the page asked only for local files.
+    requests.length = 0;
+    await backend.reload(); await sleep(900);
+    const outside = requests.filter((u) => !u.startsWith('file:'));
+    if (backend.reportsSubresources) {
+      check(`T-NFR-07 offline: reloading made ${requests.length} requests, all to local files, none to the network`, requests.length >= 6 && outside.length === 0, outside.join(', '));
+    } else {
+      // Firefox reports only the page itself for file: loads. Its test profile has all web access switched off (a proxy on a dead port),
+      // so a calculator that still works proves that it needs no network.
+      check(`T-NFR-07 offline: with all web access switched off the page loaded from the local file (${requests.length} request reported, none outside file:) and the calculator still works`,
+        outside.length === 0 && (await display()) === '0' && (await evalJs(`typeof CalcEngine`)) === 'object', outside.join(', '));
+      await clicks('2+2=');
+      check('T-NFR-07 offline: a calculation works with web access switched off (2 + 2 = 4)', (await display()) === '4', await display());
+      await clear();
+    }
+
+    // The Content-Security-Policy is really enforced (each attempt must be blocked and reported by the browser as a CSP violation).
+    const before = problems.length;
+    await evalJs(`(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.violatedDirective)); return 0; })()`);
+    const inlineRan = await evalJs(`(() => { window.__inline = false; const s = document.createElement('script'); s.textContent = 'window.__inline = true'; document.body.appendChild(s); return window.__inline; })()`);
+    const externalRan = await evalJs(`new Promise((resolve) => { const s = document.createElement('script'); s.src = 'https://example.invalid/x.js'; s.onload = () => resolve('loaded'); s.onerror = () => resolve('blocked'); document.body.appendChild(s); })`);
+    // DELIBERATE: the next call tries eval() inside the page with the policy enforced, to prove it is blocked. The app never uses eval.
+    const evalResult = await backend.evalUnderCsp(`(() => { try { return String(eval('1+1')); } catch (e) { return e.name; } })()`);
+    await sleep(400);
+    problems.splice(before); // the browser also writes these blocks to its console; they are expected here
+    const violated = await evalJs('window.__csp');
+    check('T-NFR-06 CSP: an inline script injected into the page does not run', inlineRan === false);
+    check('T-NFR-06 CSP: a script from another website is blocked', externalRan === 'blocked', externalRan);
+    if (evalResult === null) skip('T-NFR-06 CSP: eval() is blocked by the policy', 'evaluation through this driver may bypass the page policy, so the test is not meaningful');
+    else check('T-NFR-06 CSP: eval() is blocked by the policy', evalResult === 'EvalError', String(evalResult));
+    check('T-NFR-06 CSP: the browser raised a "securitypolicyviolation" event for the inline script and for the outside script (2 expected)', violated.length >= 2 && violated.every((d) => /^script-src/.test(d)), JSON.stringify(violated));
+    await backend.reload(); await sleep(900);
+
+    // Keyboard-only: a calculation with Tab, Shift+Tab, Space and Enter alone. No mouse, no calculator shortcut keys.
+    hasFocus = await evalJs('document.hasFocus()');
+    const order = await evalJs(`[...document.querySelectorAll('[data-key]')].map((b) => b.dataset.key)`);
+    const expectedOrder = ['CLEAR', 'BACKSPACE', 'NEGATE', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='];
+    check('T-NFR-04 focus order: the order of the keys in the page is the visual order (row by row, left to right)', JSON.stringify(order) === JSON.stringify(expectedOrder), order.join(' '));
+    let currentIndex = -1;
+    async function focusKey(dataKey) {
+      const target = order.indexOf(dataKey);
+      let guard = 0;
+      while (currentIndex !== target && guard++ < 30) {
+        if (currentIndex < target) { await pressKey('Tab'); currentIndex++; } else { await pressKey('Tab', 8); currentIndex--; }
+      }
+      const active = await evalJs(`document.activeElement.dataset.key`);
+      if (active !== dataKey) throw new Error(`keyboard-only navigation failed: wanted ${dataKey}, focus is on ${active}`);
+    }
+    for (const [dk, how] of [['7', ' '], ['+', 'Enter'], ['8', ' '], ['=', 'Enter']]) { await focusKey(dk); await pressKey(how); }
+    focusCheck('T-FR-13 keyboard only: 7 + 8 = typed with Tab, Shift+Tab, Space and Enter alone gives 15', (await display()) === '15', await display());
+    await focusKey('CLEAR'); await pressKey('Enter');
+    focusCheck('T-FR-13 keyboard only: the Clear key works from the keyboard', (await display()) === '0', await display());
+    for (const dk of ['9', '/', '0', '=']) { await focusKey(dk); await pressKey(' '); }
+    focusCheck('T-FR-09 keyboard only: 9 ÷ 0 = shows the error and its message', (await display()) === 'Error' && (await text('error')) === 'Cannot divide by zero', await display());
+    await focusKey('4'); await pressKey(' ');
+    focusCheck('T-FR-09 keyboard only: a digit recovers from the error', (await display()) === '4', await display());
+    await backend.reload(); await sleep(900);
+    await setViewport(1000, 800);
+
     // ================= 8. Random keys in the real page =================
     let seed = 20261031;
     const rand = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
     const pool = '0123456789.+-*/=\n,'.split('');
     let randomOk = true; let bad = '';
-    for (let i = 0; i < 400; i++) {
+    for (let i = 0; i < 1000; i++) {
       const k = pool[Math.floor(rand() * pool.length)];
       await pressKey(k === '\n' ? 'Enter' : k);
       if (i % 25 === 0) await pressKey('Escape');
       const d = await display();
       if (!/^(Error|-?\d+(\.\d*)?|-?\d(\.\d+)?e[+-]\d+)$/.test(d)) { randomOk = false; bad = d; break; }
     }
-    check('T-NFR-02 (browser): 400 random key presses never produce an invalid display', randomOk, bad);
+    check('T-NFR-02 (browser): 1000 random key presses never produce an invalid display', randomOk, bad);
 
     // ================= 9. Console =================
     check('CONSOLE: no console errors, warnings, exceptions or CSP violations during the whole run', problems.length === 0, problems.join(' | '));
   } finally {
-    try { ws && ws.close(); } catch (e) { /* ignore */ }
-    child.kill();
-    await sleep(500);
-    try { fs.rmSync(profile, { recursive: true, force: true }); } catch (e) { /* the browser may still hold files */ }
+    await backend.close();
   }
 
   const failed = results.filter((r) => !r.ok).length;
-  console.log(`\n${results.length - failed} passed, ${failed} failed, ${results.length} checks`);
+  console.log(`\n${results.length - failed} passed, ${failed} failed, ${results.length} checks` + (skipped ? `, ${skipped} skipped (not available in this browser)` : ''));
   process.exit(failed ? 1 : 0);
 }
 

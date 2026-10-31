@@ -48,9 +48,15 @@
     return entry.replace(/[^0-9]/g, '').length;
   }
 
-  // "0", "0.", "0.0" are all zero. (Number('0.') is 0.)
+  // The number a typed entry stands for. A typed "-0." means plain 0, never -0.
+  function numberFromEntry(entry) {
+    const value = Number(entry);
+    return value === 0 ? 0 : value;
+  }
+
+  // "0", "0.", "0.0" are all zero.
   function isZeroEntry(entry) {
-    return Number(entry) === 0;
+    return numberFromEntry(entry) === 0;
   }
 
   // Combine two numbers. Returns { value } or { error }.
@@ -105,12 +111,11 @@
     switch (state.phase) {
       case 'ready':
         return makeState('operatorPending', '0', 0, operator, null);
-      case 'operatorPending':
-        return makeState('operatorPending', '0', state.accumulator, operator, null); // FR-08: replace the operator
-      case 'result':
-        return makeState('operatorPending', '0', state.accumulator, operator, null); // continue from the result
+      case 'operatorPending': // FR-08: replace the operator
+      case 'result': // continue from the result
+        return makeState('operatorPending', '0', state.accumulator, operator, null);
       case 'entering': {
-        const right = Number(state.entry);
+        const right = numberFromEntry(state.entry);
         if (state.operator === null) return makeState('operatorPending', '0', right, operator, null);
         // Immediate execution (decision D1): finish the pending operation first.
         const outcome = calculate(state.accumulator, state.operator, right);
@@ -124,8 +129,8 @@
 
   function pressEquals(state) {
     if (state.phase !== 'entering') return state; // FR-18 and decision D11: nothing to calculate
-    const right = Number(state.entry);
-    if (state.operator === null) return makeState('result', '0', right === 0 ? 0 : right, null, null);
+    const right = numberFromEntry(state.entry);
+    if (state.operator === null) return makeState('result', '0', right, null, null);
     const outcome = calculate(state.accumulator, state.operator, right);
     if (outcome.error) return errorState(state, outcome.error);
     return makeState('result', '0', outcome.value, null, null);
@@ -134,13 +139,14 @@
   function pressBackspace(state) {
     if (state.phase !== 'entering') return state; // only typed digits can be deleted
     let entry = state.entry.slice(0, -1);
-    if (entry === '' || entry === '-') entry = '0';
+    if (entry === '' || entry === '-' || entry === '-0') entry = '0'; // never leave "-0" (it would show as "-07" after a 7)
     return makeState('entering', entry, state.accumulator, state.operator, null);
   }
 
   function pressNegate(state) {
     if (state.phase === 'entering') {
-      if (isZeroEntry(state.entry)) return state; // FR-15: zero stays 0
+      // FR-15: zero stays 0. (A typed "-0." may lose its minus sign again.)
+      if (!state.entry.startsWith('-') && isZeroEntry(state.entry)) return state;
       const entry = state.entry.startsWith('-') ? state.entry.slice(1) : '-' + state.entry;
       return makeState('entering', entry, state.accumulator, state.operator, null);
     }

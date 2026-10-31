@@ -1,11 +1,15 @@
 # Requirements Specification
 
-**Status:** Draft v0.3, awaiting team review. v0.3 records the project lead's decisions of 2026-10-31 (D9-D16). v0.2 applies the lessons of the [calculator review](calculator-review.md) (L1-L11). **No user research has been done**; the user list below is still an assumption. Changes are recorded in the [decision log](../00-admin/decision-log.md).
+**Status:** v0.3, 2026-10-31, **verified by automated tests** (see the [test report](../04-implementation-testing/test-report.md)); awaiting team review. **No user research has been done**; the user list below is still an assumption. Changes are recorded in the [decision log](../00-admin/decision-log.md).
 **Last updated:** 2026-10-31
 
-**Changes from v0.2 (2026-10-31, approved decisions):** FR-14 (percent) retired and moved to Won't have (W-08); FR-15 (sign toggle) raised to Must; FR-13 accepts a comma as an alias for the decimal point; section 4 confirms D3 and rejects the snap-to-zero proposal; FR-11 gains an underflow rule.
+**Version history.**
 
-**Changes from v0.1:** FR-13 raised to Must; FR-14 defined; FR-12 counting rule made exact; FR-18 added; NFR-03, NFR-04, NFR-05 made testable and corrected (44 px is WCAG AAA, not AA); section 4 gains a Phase 2 finding that needs approval.
+| Version | Date | Changes |
+|---|---|---|
+| v0.1 | 2026-10-31 | Phase 1 baseline: 17 functional and 9 non-functional requirements |
+| v0.2 | 2026-10-31 | Lessons of the [calculator review](calculator-review.md) (L1 to L11): FR-13 raised to Must; FR-14 defined; FR-12 counting rule made exact; FR-18 added; NFR-03, NFR-04, NFR-05 made testable and corrected (44 px is WCAG AAA, not AA) |
+| v0.3 | 2026-10-31 | The project lead's decisions D9 to D16: FR-14 (percent) retired and moved to Won't have (W-08); FR-15 (sign toggle) raised to Must; FR-13 accepts a comma as an alias for the decimal point; section 4 confirms D3 and rejects the snap-to-zero proposal; FR-11 gains an underflow rule. Phase 4: FR-15 note on a typed `-0.` (BUG-1) |
 
 Priorities use MoSCoW: **M** Must have, **S** Should have, **C** Could have, **W** Won't have in this project.
 
@@ -33,7 +37,7 @@ The product is a single-page calculator that runs in a web browser, offline, wit
 | FR-12 | Number entry is limited to 12 digits. | M | An entry may contain at most 12 digit characters (the `0` in `0.5` counts; the sign and the decimal point do not). Further digit presses are ignored, and this is documented. The display never overflows its container. | Unit, Browser |
 | FR-13 | The user can type with the keyboard (raised from Should: lesson L6, WCAG 2.1.1). | M | Digits, `.`, `+ - * /`, `Enter` or `=`, `Backspace`, `Escape` (clear) work as the matching buttons. A comma `,` is accepted as an alias of `.` (the period is the primary decimal separator and the display always shows a period). Keys combined with Ctrl, Alt or Meta are not intercepted. Tab reaches every button and Enter or Space activates it. | Unit (key map), Browser |
 | FR-14 | ~~Percent function.~~ **Retired 2026-10-31 (decision D10).** Moved to Won't have, see W-08. | W | Not applicable. The engine must ignore any unknown key, which is tested | Unit |
-| FR-15 | The user can change the sign of the current number. | M | Pressing the key toggles between positive and negative. Zero stays `0`. Applies to the number being typed and to a result on screen. | Unit, Browser |
+| FR-15 | The user can change the sign of the current number. | M | Pressing the key toggles between positive and negative. Zero stays `0`. Applies to the number being typed and to a result on screen. A typed `-0.` (reached by backspace) may lose its minus sign again; a display of `-0` or `-07` never occurs (BUG-1, fixed in Phase 4). | Unit, Browser |
 | FR-16 | A secondary line shows the pending operation. | S | After `7+` the secondary line shows `7 +`. | Browser |
 | FR-17 | Session-only history of calculations. | C | Built only if the Must and Should items are done and tested. | Browser |
 | FR-18 | `=` with no pending operation, or an operator with no second number, is safe. | M | `=` pressed when nothing is pending leaves the display unchanged. `5 + =` leaves the display at `5` with the `+` still pending. No error, no wrong result. Repeat-equals (pressing `=` again repeats the last operation) is not supported (proposed D11). | Unit |

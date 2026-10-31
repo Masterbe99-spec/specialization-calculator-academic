@@ -1,7 +1,7 @@
 # Tool and AI Usage Log
 
 **Purpose:** An honest record of the tools, skills and AI assistance used in this project, so the final documentation can say exactly how the work was done. Only things that actually happened are listed. Planned items are marked **Planned**.
-**Last updated:** 2026-10-31 (entries up to 26)
+**Last updated:** 2026-10-31 (entries up to 39)
 
 **AI assistant used:** Claude Code (model: Sonnet 5.5), working on the project lead's computer under the project lead's instructions. All AI output is a draft. The team must review, understand and be able to explain it, and the professor's AI policy (open question Q4) must be checked.
 
@@ -35,6 +35,19 @@
 | 24 | 2026-10-31 | `tests/browser-check.js` (written in this project; Node + the installed Microsoft Edge, DevTools Protocol, **no installation**) | Browser verification in place of Playwright, which is not approved | 78 checks and 5 screenshots. Results in the test report | Pending team review. Edge only |
 | 25 | 2026-10-31 | Scratch mutation script (outside the repository, not kept) | Check that tests fail when code is wrong | 8 of 8 injected bugs caught (first attempt was invalid and repeated) | Pending team review |
 | 26 | 2026-10-31 | Claude Code (AI assistant) | Phase 3 implementation: `engine.js`, `format.js`, `keymap.js`, `app.js`, `index.html`, `styles.css`, tests, test plan, test report, development log, code walkthrough | Files listed in the Phase 3 report | **Pending review by all five team members. The team must read, understand and be able to explain every file** |
+| 27 | 2026-10-31 | `git`, `grep`, test commands | Phase 3 finalisation: review of status, scan for secrets and temporary files, re-run of tests, local commit `602e34a` | 65 of 65 unit tests, 78 of 78 browser checks, docs check passed at that time. Nothing pushed | Pending |
+| 28 | 2026-10-31 | Skill `engineering:code-review` (**invoked**) | Review lens for correctness, security, performance and maintainability | Applied by hand in `code-review.md`. It found no automatic findings; the checklist guided the manual review. This was done by the same assistant that wrote the code | Pending independent student review |
+| 29 | 2026-10-31 | Skill `security-review` (**did NOT run**) | Intended: security review of pending changes | It failed to start: `fatal: ambiguous argument 'origin/HEAD...'` because the repository has no remote. The security analysis was therefore written manually and is **not** a result of that skill | n/a |
+| 30 | 2026-10-31 | Skill `design:accessibility-review` (**not invoked again in Phase 4**) | The WCAG checklist loaded in Phase 2 was applied to the built UI through automated checks | See test report. This is not an audit by that skill | n/a |
+| 31 | 2026-10-31 | Google Chrome 156 (already installed), via `tests/browser-check.js` | Second browser for cross-browser testing | 101 of 101 checks pass. Note: `chrome.exe --version` printed "Opening in existing browser session", so Chrome may have opened a window in the user's session once | Pending |
+| 32 | 2026-10-31 | Scratch scripts outside the repository (Node): floating-point study, second mutation check | Phase 4 part A and mutation check | Results quoted in architecture 6.4 and the test report. The scripts are not kept | Pending |
+| 33 | 2026-10-31 | Firefox 159.0, installed from Mozilla's official download (`download.mozilla.org`) with the project lead's approval | Cross-browser testing | Installer signature valid (Mozilla Corporation); per-user install, no admin rights, no shortcuts. Used headless through its built-in WebDriver BiDi, with a throw-away profile. 88 passed, 0 failed, 11 skipped (test report A6). **The only tool installed in Phase 4** | Pending: a human must test keyboard focus in a normal Firefox window |
+| 34 | 2026-10-31 | Claude Code (AI assistant) | Phase 4: BUG-1 fix, new tests, `security-analysis.md`, `code-review.md`, `bug-log.md`, `team-review-checklist.md`, updates to test plan, test report, traceability, logs | Files listed in the Phase 4 report | **Pending review by all five team members** |
+| 35 | 2026-10-31 | `tests/browser-backends.js` and `tests/browser-check.js` (written in this project; Node built-ins only) | Run the same checks in Edge, Chrome and Firefox | 102 of 102 (Edge), 102 of 102 (Chrome), 88 passed and 11 skipped (Firefox) | Pending: no student has run them |
+| 36 | 2026-10-31 | PowerShell: `Get-AuthenticodeSignature`, `Get-FileHash`, `WScript.Shell.AppActivate` | Verify the Firefox installer; try to give the automated Firefox window keyboard focus | Signature valid. The focus attempt failed (`document.hasFocus()` stayed `false`) | n/a |
+| 37 | 2026-10-31 | Scratch script (outside the repository): accessibility-tree snapshots before and after each key | Investigate the possible duplicate screen-reader announcement | An error changes 2 live regions (test report A6.3). **Not a screen-reader test; no screen reader was run** | Needs a human |
+| 38 | 2026-10-31 | `node tests/docs-check.js` extended | Check that screenshots match the current application (hashes) and that no screenshot is undescribed | Passes | Pending |
+| 39 | 2026-10-31 | Claude Code (AI assistant) | Phase 4 finalisation: documentation clean-up, Firefox testing, final review, local commit | Files in the Phase 4 final report | **Pending review by all five team members** |
 
 ## 2. Availability of tools and skills
 

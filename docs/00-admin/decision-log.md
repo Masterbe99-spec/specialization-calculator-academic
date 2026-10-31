@@ -143,6 +143,20 @@ Four source files instead of three: `engine.js` (state and arithmetic), `format.
 
 ---
 
+## Phase 4 (quality assurance, 2026-10-31)
+
+| ID | Decision or change | Status | Reason |
+|---|---|---|---|
+| C1 | BUG-1 fix in `engine.js` (no `-0` entry; negate may remove the sign of `-0.`; one helper converts entries to numbers) | **Implemented**, with regression tests. Behaviour change is limited to the display of an entry that used to look wrong | Wrong display `-0` and `-07` |
+| C2 | Two identical switch cases merged; `numberFromEntry` helper added | Implemented | Simpler code, same behaviour (all earlier tests unchanged) |
+| D17 | Exact decimal arithmetic for `+ - ×` (option E) so that `0.1+0.2-0.3` shows `0` | **Rejected by the project lead on 2026-10-31: keep D3, do not implement D17.** Measured in [architecture.md](../03-design-prototype/architecture.md) section 6.4 for the record | E keeps small values but changes `1 ÷ 3 × 3 - 1` from `0` to `-1e-16` and adds code. D3 stays in force. Reopen only if acceptance testing shows the `0.1+0.2-0.3` display is unacceptable |
+| C3 | Browser testing in Chrome 156 (already installed) and in **Firefox 159, installed on 2026-10-31 with the project lead's approval** from Mozilla's official download (signature checked, per-user install, no admin rights) | **Done.** Edge and Chrome 102 of 102; Firefox 88 passed, 0 failed, 11 skipped. Focus-dependent behaviour in Firefox is **not verified** (the automated window has no keyboard focus); a human must test it | Part B of the Phase 4 request. See test report A6 |
+| C4 | Playwright still **not** installed. Test infrastructure change: `tests/browser-backends.js` (new) holds the Chromium and Firefox drivers; `tests/browser-check.js` uses it. No dependency added | Unchanged approval status | The two browser protocols are built into the browsers, so no package is needed |
+| C5 | The possible duplicate screen-reader announcement of an error was **investigated** (two live regions change: polite `Error`, assertive `Cannot divide by zero`). **No code change** | Recorded; needs a human with a screen reader | Without a real screen-reader test a change could make things worse. Test report A6.3 |
+| C6 | The Phase 4 approval of the project lead (2026-10-31): keep D3; approve Firefox installation; approve a local Phase 4 commit; no push; no new features | Followed | |
+
+---
+
 ## Open questions (not yet answered)
 
 | # | Question | For | Affects |

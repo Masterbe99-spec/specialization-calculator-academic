@@ -1,6 +1,6 @@
 # Architecture and Diagrams
 
-**Status:** Draft v0.2, finalised 2026-10-31 after the project lead's decisions (D9-D16). Percent is out of scope; the number policy of D3 is confirmed.
+**Status:** v0.3, 2026-10-31. Design as built (Phases 2 to 4). Percent is out of scope; the number policy of D3 is confirmed and kept (D17 not implemented). Sections marked "proposed" below are the original design wording; the as-built facts are in the [test report](../04-implementation-testing/test-report.md).
 **Last updated:** 2026-10-31
 **Skills used:** `engineering:system-design` (structure: requirements, high-level design, data flow, trade-offs). See [tool log](../00-admin/tool-ai-usage-log.md).
 **How to view the diagrams:** The diagrams are written in Mermaid inside Markdown. GitHub, VS Code (with a Mermaid preview extension) and many Markdown viewers draw them. On 2026-10-31 all four diagrams were rendered with Mermaid in headless Microsoft Edge and every diagram parsed without errors (see the [tool log](../00-admin/tool-ai-usage-log.md), entry 19). A human should still look at them in the viewer the team uses.
@@ -68,7 +68,7 @@ The calculator has **two layers**.
 
 The tests are not part of the product. They sit on the developer's computer and call `engine.js` and `format.js` directly.
 
-### 2.3 File plan (proposed, to be built in Phase 3)
+### 2.3 File layout (as built in Phase 3)
 
 ```
 src/
@@ -83,12 +83,16 @@ tests/
 ├─ engine.test.js
 ├─ format.test.js
 ├─ keymap.test.js
-└─ security.test.js
+├─ security.test.js
+├─ boundary.test.js
+├─ accessibility.test.js
+├─ browser-check.js, browser-backends.js    real-browser checks (Edge, Chrome, Firefox)
+└─ docs-check.js                            documentation consistency
 ```
 
 `engine.js`, `format.js` and `keymap.js` are classic scripts that attach one object each to the page (`CalcEngine`, `CalcFormat`, `CalcKeymap`). At the end of each file, a short check (`if (typeof module !== 'undefined') module.exports = ...`) lets Node load them in tests. This is the arrangement chosen in decision D2.
 
-## 3. Modules and their interfaces (proposed)
+## 3. Modules and their interfaces
 
 | Module | Public functions | Rules |
 |---|---|---|
@@ -248,7 +252,7 @@ Computers store most decimal fractions approximately. A scratch calculation with
 
 (Why this happens is a general property of binary floating-point numbers. A citable source such as the ECMAScript specification or MDN has **not** been read by us yet; add one before the report states the cause.)
 
-### 6.2 Display formatting (proposed, same for all options)
+### 6.2 Display formatting (as implemented; same for all options)
 
 1. If the value is not a finite number, it must never reach the display: the engine reports `DIV_ZERO` or `OVERFLOW` instead.
 2. Show at most **12 significant digits**; remove trailing zeros. In Node, `Number.prototype.toPrecision(12)` followed by trimming gave `0.3` for `0.30000000000000004` and `0.333333333333` for `1/3`.
@@ -274,7 +278,28 @@ Results above come from three scratch calculations run in Node on 2026-10-31. Th
 
 **Known limit of every option.** `1 - 0.9999999999` gave `1.000000082740371e-10` in the scratch run, although the true answer is `1e-10`. Subtracting two almost-equal numbers magnifies the small storage error of the inputs. Option D does not fix this and neither does B. Only option E would. Under the adopted option A this is a **known limitation** to document in the user guide and the test report.
 
-**Need for tests.** The risk RK-05 stays open. Phase 3 must include the cases above plus a randomised test that no key sequence produces `NaN`, `Infinity` or `undefined` (NFR-02).
+### 6.4 Phase 4 follow-up: measured comparison of the options (2026-10-31)
+
+The project lead asked in Phase 4 to investigate the floating-point display again, compare reasonable options, never convert genuinely small non-zero results to zero, and keep arithmetic reliable. A scratch study (not project code, script not kept in the repository) compared the adopted rule **A** (raw doubles, D3) with **E** (exact decimal arithmetic for `+ - ×` using `BigInt`, on the shortest decimal form of each stored number; division stays a double). The reference was exact `BigInt` decimal arithmetic. Sample: 5,000 random chains of four typed numbers (up to two decimals, `+ - ×`, seeded generator).
+
+| Measure | A (adopted) | E (exact decimals) |
+|---|---|---|
+| Display differs from the exact 12-digit answer | **2 of 5,000 (0.04 %)**. Both differ in the 12th digit of a long product, for example exact `-1118835.38813`, A shows `-1118835.38812` | 0 of 5,000 |
+| Chains whose exact answer is `0` | 11 of 5,000; A showed `0` in all 11 | `0` in all 11 |
+| `0.1 + 0.2 - 0.3` | `5.55111512313e-17` | `0` |
+| `1 ÷ 3 × 3 - 1` | `0` | `-1e-16` (new artifact: E multiplies the stored `0.3333333333333333` exactly) |
+| `10 ÷ 3 × 3 - 10` | `0` | `0` |
+| `1e-20 + 2e-20` (genuinely small) | `3e-20` | `3e-20` |
+| Code and test cost | none | about 40 lines and a new test group |
+
+Findings:
+
+1. Under A, the visible artifact appears only in **cancellation** cases such as `0.1 + 0.2 - 0.3` (a sum that is exactly `0` mathematically). In the random sample it never happened, so it is rare in practice, but it is easy to demonstrate.
+2. E removes the artifact for `+ - ×` but moves the problem to chains with division, and adds code that the five students must understand. Division can never be exact in either option.
+3. Neither option converts a genuinely small non-zero result to zero. The rejected "snap to zero" rule (D9) did, which is why it was not adopted.
+4. **No change was made to the arithmetic.** D3 stays in force. If the team wants `0.1 + 0.2 - 0.3 = 0`, option E is the candidate; it needs a project-lead decision (proposed **D17**, not approved) and new tests before implementation.
+
+**Tests.** The cases above, plus randomised tests that no key sequence produces `NaN`, `Infinity` or `undefined` (NFR-02), exist in `tests/` and pass (see the test report). Risk RK-05 stays open until a human has reviewed them.
 
 ## 7. Security and robustness notes
 
@@ -285,7 +310,7 @@ Results above come from three scratch calculations run in Node on 2026-10-31. Th
 | Code execution | No `eval`, no `new Function`, no `setTimeout("string")`. Arithmetic is done by four small functions |
 | Page injection | The display is written with `textContent`, never `innerHTML` |
 | Third-party code | None. No CDN, no web fonts (system font stack), no analytics. Everything works offline |
-| Content Security Policy | A `<meta http-equiv="Content-Security-Policy">` is planned that allows only the page's own scripts and styles. **Not yet tested from `file://`:** browsers treat `file:` pages specially, so the exact policy must be tried in Chrome, Firefox and Edge during Phase 3. Do not assume it works |
+| Content Security Policy | A `<meta http-equiv="Content-Security-Policy">` allows only the page's own scripts and styles. Tested from `file://` in Edge 156, Chrome 156 and Firefox 159 (all headless): the page works and the policy blocks injected inline scripts and outside scripts. See the [security analysis](../04-implementation-testing/security-analysis.md) section 4 |
 | Personal data | None collected, stored or sent. No cookies, no `localStorage` (history is out of scope, W-03) |
 | Input | Only our own key names are accepted; any other event is dropped at step 2.0 of the data-flow diagram |
 
@@ -317,4 +342,4 @@ Results above come from three scratch calculations run in Node on 2026-10-31. Th
 | O3 | Are the display thresholds (12 significant digits; fixed notation between `0.0001` and `1e12`) acceptable? | The project lead asked for a clearly documented formatting policy with dedicated tests. The thresholds are implemented as stated in 6.2 and covered by `tests/format.test.js`. Open for team review |
 | O4 | Approve D11 (no repeat-equals)? | **Yes** |
 | O5 | Does the professor expect a particular diagram notation (UML, Yourdon)? | **Still open** (Q2). Slide 32 names "data flow diagrams" but gives no notation |
-| O6 | Does a `meta` Content Security Policy work from `file://` in all three browsers? | **Open.** Phase 3 tests it in Edge only; Chrome and Firefox remain untested |
+| O6 | Does a `meta` Content Security Policy work from `file://` in all three browsers? | **Yes in Edge 156, Chrome 156 and Firefox 159** (headless, automated, 2026-10-31). A human should repeat it in normal windows |
