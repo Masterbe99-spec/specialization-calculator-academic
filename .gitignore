@@ -5,12 +5,36 @@ coverage/
 playwright-report/
 test-results/
 
-# Local tool settings (personal, not shared)
-.claude/settings.local.json
+# Local Claude Code configuration (personal, not shared)
+.claude/
+CLAUDE.local.md
+
+# Environment files and secrets (never commit these)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.*
+
+# Office lock files and temporary or backup files
+~$*
+.~lock.*
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# OneDrive and other sync conflict copies (also check for files named like "name-<PC name>.ext")
+*conflicted copy*
 
 # OS and editor files
 .DS_Store
 Thumbs.db
 desktop.ini
 .vscode/
+.idea/
 *.log

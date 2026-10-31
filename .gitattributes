@@ -3,3 +3,21 @@
 *.html text
 *.css text
 *.js text
+*.cjs text
+*.json text
+*.py text
+*.ps1 text
+*.svg text
+
+# Binary assets: never normalise line endings, never try to merge as text
+*.docx binary
+*.pptx binary
+*.xlsx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.bin binary
