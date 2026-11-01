@@ -7,13 +7,44 @@ A browser-based calculator that lets the user perform basic mathematical operati
 > **Status: Phase 4 (quality assurance) finished. Phase 5 (final report and presentation): DRAFT deliverables prepared on 31 October 2026 (draft 0.2); they are not final and not submission-ready until the five students have reviewed and completed them. Start with the [team handover guide](docs/05-final/team-handover-guide.md).**
 > A working calculator exists in `src/` with automated tests. It was tested by the AI assistant in **Edge, Chrome and Firefox** (headless). **No student has run the tests, and no human has verified anything yet:** screen reader, real phone, first-time users, Firefox keyboard focus and independent code review are still open. See the [test report](docs/04-implementation-testing/test-report.md), whose Part A is the current result.
 
-## AI assistance and authorship
+## Project overview
 
-- The source code, the automated tests and the first drafts of the documents in this repository were written by an AI assistant (Claude Code), working on the instructions of the project lead. They are **not** the independent work of the five students.
-- The students' own contributions (working hours, meetings, reviews, reflections and the human acceptance tests) are **not yet recorded**. The [team handover guide](docs/05-final/team-handover-guide.md) and the task tracker (`docs/05-final/Team-Task-Tracker.xlsx`) list what the students still have to do and record.
-- Every use of AI tools is listed in the [tool and AI usage log](docs/00-admin/tool-ai-usage-log.md). The report states it in its cover note, in Sections 1.6 and 6.6 and in Appendix C, and slide 2 of the presentation says it.
-- Git history: the commits were made under the project lead's Git identity. Until 1 November 2026 their messages carried a `Co-Authored-By: Claude` trailer. It was removed from the commit messages on that date (messages only; the files, authors, committers and timestamps are unchanged) so that GitHub's contributors list does not present the AI tool as a team member. The AI involvement is still documented in this README, the usage log and the report.
-- The professor's policy on AI assistance is still an open question (Q4 in the [decision log](docs/00-admin/decision-log.md)).
+**Purpose and scope.** This repository holds Team A's specialization project: a basic calculator that lets a user perform basic mathematical operations, together with its documentation (project card, requirements, design, test plan and report, research, final report and presentation drafts). The scope is a small, correct, accessible, offline calculator for first-time users, plus the evidence that it works. It is not a scientific calculator: there are no functions such as roots, powers or memory.
+
+**Calculator features**
+
+- Addition, subtraction, multiplication and division of decimal numbers.
+- Operations are applied in the order the keys are pressed (`2 + 3 × 4 =` gives `20`), as on a basic pocket calculator.
+- Decimal point (a comma is accepted as an alias), sign change (±), delete last digit (⌫) and clear (C).
+- Results are shown with at most 12 significant digits, with trailing zeros removed and exponent notation for very large or very small values.
+- Full keyboard support: digits, `.` or `,`, `+ - * /`, `Enter` or `=`, `Backspace`, `Esc` (clear).
+- Error handling for invalid operations such as division by zero.
+- Accessibility considerations (labelled buttons, keyboard focus, responsive layout down to a 320 px width). Some of these checks are still open; see the [test report](docs/04-implementation-testing/test-report.md).
+
+**Technologies.** HTML, CSS and vanilla JavaScript (no frameworks, no runtime dependencies). Tests use the Node.js built-in test runner (`node --test`) and a small script that drives a real browser (Edge, Chrome or Firefox). Documentation is written in Markdown; the final report and presentation drafts are Word and PowerPoint files.
+
+**Launching the calculator.** Open `src/index.html` in a web browser (double-click it). No server, installation or internet connection is needed.
+
+**Running the automated tests.** Install [Node.js](https://nodejs.org) 22 or newer; nothing else needs installing. From the repository root:
+
+```
+npm test                                    or: node --test (unit and static tests)
+node tests/browser-check.js --shots         checks in a real browser (Edge or Chrome), saves screenshots
+node tests/browser-check.js --firefox       the same checks in Firefox
+node tests/docs-check.js --require-tests    documentation consistency check
+```
+
+If the browser is not found automatically, set the `BROWSER` or `FIREFOX` environment variable to the browser's executable.
+
+**Repository structure.** `src/` is the application; `tests/` holds the automated tests and checks; `docs/` holds the documentation, numbered by project phase; `evidence/screenshots/` holds screenshots taken from real runs. The full tree is under [Project structure](#project-structure).
+
+**Team collaboration.**
+
+- Work on a short-lived branch and open a pull request into `main`; at least one other team member reviews each change before it is merged.
+- Run `npm test` and `node tests/docs-check.js --require-tests` before every commit, and keep commits small with a clear message.
+- Record significant decisions in the [decision log](docs/00-admin/decision-log.md) and every use of tools, including AI assistance, in the [tool and AI usage log](docs/00-admin/tool-ai-usage-log.md).
+- Record only work, hours, meetings and test results that actually happened. The [team handover guide](docs/05-final/team-handover-guide.md) and the task tracker (`docs/05-final/Team-Task-Tracker.xlsx`) list what each member still has to do and record.
+- Roles are provisional; see the [responsibility matrix](docs/01-project-card/responsibility-matrix.md).
 
 ## The assignment
 
