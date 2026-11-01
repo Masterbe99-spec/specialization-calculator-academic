@@ -7,6 +7,14 @@ A browser-based calculator that lets the user perform basic mathematical operati
 > **Status: Phase 4 (quality assurance) finished. Phase 5 (final report and presentation): DRAFT deliverables prepared on 31 October 2026 (draft 0.2); they are not final and not submission-ready until the five students have reviewed and completed them. Start with the [team handover guide](docs/05-final/team-handover-guide.md).**
 > A working calculator exists in `src/` with automated tests. It was tested by the AI assistant in **Edge, Chrome and Firefox** (headless). **No student has run the tests, and no human has verified anything yet:** screen reader, real phone, first-time users, Firefox keyboard focus and independent code review are still open. See the [test report](docs/04-implementation-testing/test-report.md), whose Part A is the current result.
 
+## AI assistance and authorship
+
+- The source code, the automated tests and the first drafts of the documents in this repository were written by an AI assistant (Claude Code), working on the instructions of the project lead. They are **not** the independent work of the five students.
+- The students' own contributions (working hours, meetings, reviews, reflections and the human acceptance tests) are **not yet recorded**. The [team handover guide](docs/05-final/team-handover-guide.md) and the task tracker (`docs/05-final/Team-Task-Tracker.xlsx`) list what the students still have to do and record.
+- Every use of AI tools is listed in the [tool and AI usage log](docs/00-admin/tool-ai-usage-log.md). The report states it in its cover note, in Sections 1.6 and 6.6 and in Appendix C, and slide 2 of the presentation says it.
+- Git history: the commits were made under the project lead's Git identity. Until 1 November 2026 their messages carried a `Co-Authored-By: Claude` trailer. It was removed from the commit messages on that date (messages only; the files, authors, committers and timestamps are unchanged) so that GitHub's contributors list does not present the AI tool as a team member. The AI involvement is still documented in this README, the usage log and the report.
+- The professor's policy on AI assistance is still an open question (Q4 in the [decision log](docs/00-admin/decision-log.md)).
+
 ## The assignment
 
 The professor's presentation (2 October 2026) assigns Team A the application "Calculator that allows the user to perform basic mathematical operations" (slide 10). It must be a **working application**. The final result, per slide 8, is a very simple working application with documentation containing five clearly defined and described elements:

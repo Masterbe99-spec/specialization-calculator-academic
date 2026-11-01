@@ -1,7 +1,7 @@
 # Tool and AI Usage Log
 
 **Purpose:** An honest record of the tools, skills and AI assistance used in this project, so the final documentation can say exactly how the work was done. Only things that actually happened are listed. Planned items are marked **Planned**.
-**Last updated:** 2026-10-31 (entries up to 47)
+**Last updated:** 2026-10-31 (entries up to 50)
 
 **AI assistant used:** Claude Code (model: Sonnet 5.5), working on the project lead's computer under the project lead's instructions. All AI output is a draft. The team must review, understand and be able to explain it, and the professor's AI policy (open question Q4) must be checked.
 
@@ -56,6 +56,9 @@
 | 45 | 2026-10-31 | Scratch Node script outside the repository, using `tests/browser-backends.js`, Microsoft Edge headless | Run the live-demo script in order, in one page load, in a real browser | Found that step 7 of the demo (sign and delete after a result) would look broken; the script now starts that step with `C` and a fresh number. 18 of 18 checks pass. The application files were **not** changed | Pending; a student must rehearse on the presentation computer |
 | 46 | 2026-10-31 | Claude Code (AI assistant) | Phase 5 corrections: report draft 0.2, slides, demo script, 9-minute plan, placeholder classes | Files in `docs/05-final/` | **Pending review by all five team members** |
 | 47 | 2026-11-01 | Claude Code (AI assistant) | Final targeted layout fixes in the report, status updates in README and logs, the team handover guide, local Phase 5 draft commit | `docs/05-final/team-handover-guide.md`; report draft 0.2 rebuilt (56 pages); the demo check, `node --test` and the docs check were run again; no push | **Pending review by all five team members** |
+| 48 | 2026-11-01 | Git (`filter-branch` with a message filter), run by Claude Code on the project lead's instruction | Remove the `Co-Authored-By: Claude` trailer from the 8 commit messages so that GitHub does not list the AI tool as a contributor | Commit messages only: the 8 file trees, authors, committers and timestamps are identical (checked). All 8 commit hashes changed (old tip `724328b`, new tip `887163e`); pushed with an exact force-with-lease. A verified backup of the previous history was made first. The AI involvement stays documented in the README, in this log and in the report | Approved by the project lead |
+| 49 | 2026-11-01 | Claude Code setting `attribution` = `{"commit": "", "pr": "", "sessionUrl": false}` in the local, untracked `.claude/settings.local.json` | Stop Claude Code from adding automatic co-author trailers and attribution text to future commits and pull requests | The setting name was checked in the installed version (2.1.316); `includeCoAuthoredBy` is deprecated. Other settings were not changed. Disclosure continues in the README and in this log | Approved by the project lead |
+| 50 | 2026-11-01 | Claude Code (AI assistant) | Add the section "AI assistance and authorship" to the README and record entries 48 and 49 | `README.md` and this log. No student contribution is claimed or invented | Pending review by all five team members |
 
 ## 2. Availability of tools and skills
 
